@@ -215,5 +215,7 @@ anioConCostoDeVidaAscendente :: LosAniosPasan -> Ciudad -> Bool
 anioConCostoDeVidaAscendente = listaDeEventosOrdenada . eventos  
 
 --Punto 6.2
+listaDeCiudadesOrdenadas :: [Ciudad] -> Evento -> Bool
+listaDeCiudadesOrdenadas ciudades evento = foldDobleR (\c1 -> \c2 -> \resto -> (costoDeVida . evento $ c1) < (costoDeVida . evento $ c2) && resto) True ciudades
 
 
