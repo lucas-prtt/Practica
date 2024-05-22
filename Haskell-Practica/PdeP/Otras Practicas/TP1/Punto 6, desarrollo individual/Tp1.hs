@@ -225,3 +225,26 @@ listaDeCiudadesOrdenadas ciudades evento = foldDobleR (\c1 -> \c2 -> \resto -> (
 aniosOrdenados :: [LosAniosPasan] -> Ciudad -> Bool
 aniosOrdenados anios ciudad = foldDobleR (\a1 -> \a2 -> \resto -> (costoDeVida $ pasarPorAnio a1 ciudad) < (costoDeVida $ pasarPorAnio a2 ciudad) && resto) True anios
 
+
+--Punto 7
+
+año2024 = LosAniosPasan 2024 ([atravesarCrisis, reevaluacion 7] ++ (map remodelacion [1..]))
+
+{- 
+Si, es posible, puesto que atravesar una crisis siempre reduce el costo
+de vida en un 10% mientras que reevaluar puede aumentar el costo de vida
+en un 10% o reducirlo en 3 unidades. Si al realizar la reevaluación, se 
+da el caso donde se resta el costo de vida y los 3 puntos restados representan
+una disminución mayor que la causada por el 10%, es decir, el costo de vida
+es menor a 30 y hay una atraccion con menos de 7 letras, la función devolverá
+False y se detendrá en su primera comparación por la Lazy Evaluation.
+Al mismo tiempo, suponiendo que le reevaluación sea un exito, se dará un aumento
+del costo de vida de un 10%, claramente menor al que sigue que será de 1%, por lo
+que devolvera False en la segunda comparación por Lazy Evaluation.
+Si se diera que el costo de vida es mayor a 30 y la reevaluación fracasa, sin embargo
+el costo de vida comenzará reduciendose mas de 3 puntos. Luego se reducira justo
+3 puntos y luego aumentará gradualmente hasta el infinito, por lo que nunca
+dejará de evaluar, dado que todas las comparaciones serán verdaderas.
+Eventualmente el programa se quedará sin memoria y el proceso se dará por
+finalizado sin ninguna respuesta. 
+-}
