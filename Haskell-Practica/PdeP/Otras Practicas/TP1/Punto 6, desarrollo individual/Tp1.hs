@@ -213,9 +213,15 @@ listaDeEventosOrdenada lista ciudad = foldDobleR (\e1 -> \e2 -> \resto -> (costo
 -- Ahora a aplicarla al ejercicio con lo de los anios
 anioConCostoDeVidaAscendente :: LosAniosPasan -> Ciudad -> Bool
 anioConCostoDeVidaAscendente = listaDeEventosOrdenada . eventos  
+-- Notese que se puede utilizar la funcion foldDoble a DERECHA, pusto que && es conmutativo
 
 --Punto 6.2
 listaDeCiudadesOrdenadas :: [Ciudad] -> Evento -> Bool
 listaDeCiudadesOrdenadas ciudades evento = foldDobleR (\c1 -> \c2 -> \resto -> (costoDeVida . evento $ c1) < (costoDeVida . evento $ c2) && resto) True ciudades
 
+
+
+--Punto 6.3
+aniosOrdenados :: [LosAniosPasan] -> Ciudad -> Bool
+aniosOrdenados anios ciudad = foldDobleR (\a1 -> \a2 -> \resto -> (costoDeVida $ pasarPorAnio a1 ciudad) < (costoDeVida $ pasarPorAnio a2 ciudad) && resto) True anios
 
