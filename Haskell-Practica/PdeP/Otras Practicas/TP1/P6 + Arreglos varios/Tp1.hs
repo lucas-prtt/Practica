@@ -1,7 +1,5 @@
 --import Lib 
 ------- Por ahora el import Lib no anda
-{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
-{-# HLINT ignore "Move brackets to avoid $" #-}
 
 import Text.Show.Functions
 import Data.List(genericLength)
