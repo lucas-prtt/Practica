@@ -1,5 +1,7 @@
 --import Lib 
 ------- Por ahora el import Lib no anda
+{-# OPTIONS_GHC -Wno-unrecognised-pragmas #-}
+{-# HLINT ignore "Move brackets to avoid $" #-}
 
 import Text.Show.Functions
 import Data.List(genericLength)
@@ -8,7 +10,7 @@ import Data.List(genericLength)
 --de modelar las ciudades del pintoresco país de Haskellandia, de las que nos interesa
 --conocer su nombre, el año de fundación, las atracciones principales (como “Obelisco”,
 --Pan de Azúcar”, “El Gorosito”, etc.) y su costo de vida.
-   
+
 
 -- Estructura Ciudad
 data Ciudad = Ciudad {
@@ -30,7 +32,7 @@ barcelona = Ciudad "Barcelona" 1700 ["Sagrada Familia", "Parc Guell"] 1000
 buenosAires = Ciudad "Buenos Aires" 1536 ["Obelisco", "Casa Rosada"] 800
 paris = Ciudad "Paris" 300 ["Torre Eiffel", "Louvre"] 1500
 tokio = Ciudad "Tokio" 1603 [] 2000
-
+azul = Ciudad "Azul" 1832 ["Teatro Español","Parque Municipal Sarmiento", "Costanera Cacique Catriel"] 190
 
 
 
@@ -40,10 +42,10 @@ tokio = Ciudad "Tokio" 1603 [] 2000
 
 valorDeUnaCiudad ::  Ciudad -> Float
 valorDeUnaCiudad ciudad
-    | anio ciudad < 1800 = fromIntegral(5 * (1800 - anio ciudad))
+    | anio ciudad < 1800 = fromIntegral (5 * (1800 - anio ciudad))
     | null (atracciones ciudad) = 2 * costoDeVida ciudad
-    | otherwise =  3 * costoDeVida ciudad 
-    
+    | otherwise =  3 * costoDeVida ciudad
+
 
 
 
@@ -53,7 +55,7 @@ valorDeUnaCiudad ciudad
 
 esVocal :: Char -> Bool
 esVocal letra =  letra `elem` "aeiouAEIOU"
- 
+
 algunaAtraccionCopada :: Ciudad -> Bool
 algunaAtraccionCopada ciudad = any atraccionCopada (atracciones ciudad)
 
@@ -73,11 +75,13 @@ ciudadSobria cantidadDeLetras ciudad = all (mayorACantidadDeLetras cantidadDeLet
 --Punto 2.2
 -- Ciudad con nombre raro
 
+
+--                                                                     MODIFICADA
 ciudadNombreRaro :: Ciudad -> Bool
-ciudadNombreRaro ciudad = any ((<5) . genericLength) (atracciones ciudad)
+ciudadNombreRaro = (<5) . genericLength . nombre
 
 
- 
+
 
 
 
@@ -100,7 +104,7 @@ remodelacion porcetanje (Ciudad nombre anio atracciones costoDeVida) = Ciudad ("
 --Punto 3.3
 -- Reevaluación
 reevaluacion :: Int -> Ciudad -> Ciudad
-reevaluacion cantidadLetras (Ciudad nombre anio atracciones costoDeVida) 
+reevaluacion cantidadLetras (Ciudad nombre anio atracciones costoDeVida)
     | ciudadSobria cantidadLetras (Ciudad nombre anio atracciones costoDeVida) = Ciudad nombre anio atracciones (costoDeVida * 1.10)
     | otherwise = Ciudad nombre anio atracciones (costoDeVida - 3)
 
@@ -109,10 +113,21 @@ reevaluacion cantidadLetras (Ciudad nombre anio atracciones costoDeVida)
 
 
 -- Punto 4 --
-
+                                                                      --MODIFICADA
 detonarCiudad :: Ciudad -> Ciudad
-detonarCiudad = reevaluacion 5 . remodelacion 10 . atravesarCrisis . sumarUnaNuevaAtraccion "Atraccionnro1" 
-
+detonarCiudad = reevaluacion 5 . atravesarCrisis . remodelacion 10 . sumarUnaNuevaAtraccion "Atraccionnro1"
+--Para que una ciudad pase por estos cambios se puede llamar por la consola de ghci
+--"detonarCiudad <Ciudad>" donde <Ciudad> es el la ciudad a la que se le quieren aplicar
+--estas funciones 
+--Tambien es posible escribir directamente "reevaluacion <x> . atravesarCrisis . remodelacion <y> . sumarNuevaAtraccion <z> $ <ciudad>"
+--Con <x> un Int, <y> un Float, <z> un String y <ciudad> la ciudad en cuestion
+--Ademas, es posible utilizar la función del punto 5 pasarPorListaDeEventos para, en lugar
+--de componer funciones, hacer una lista de las mismas de la siguiente manera
+--"pasarPorListaDeEventos [reevaluacion <x>, atravesarCrisis, remodelacion <y>, nuevaAtraccion <z>] <ciudad>"
+detonarCiudadPersonalizada :: Int -> Float -> String -> Ciudad -> Ciudad
+detonarCiudadPersonalizada critReevaluacion tasaRemodelacion nombreAtraccion = reevaluacion critReevaluacion . atravesarCrisis  . remodelacion tasaRemodelacion. sumarUnaNuevaAtraccion nombreAtraccion 
+--O tambien se puede llamar esta funcion para elegir las variables x, y, z anteriores mas facilmente
+--utilizando "detonarCiudadPersonalizada <x> <y> <z> <ciudad>"
 
 
 
@@ -138,7 +153,7 @@ pasarPorAnio anio = pasarPorListaDeEventos (eventos anio)
 --pasarPorListaDeEventos _ ciudad      = ciudad 
 --                          Version con fold
 pasarPorListaDeEventos :: [Ciudad -> Ciudad] -> Ciudad -> Ciudad
-pasarPorListaDeEventos = flip $ foldr (\evento -> \ciudad -> evento ciudad) 
+pasarPorListaDeEventos = flip $ foldr (\evento ciudad -> evento ciudad)
 
 
 
@@ -147,7 +162,7 @@ pasarPorListaDeEventos = flip $ foldr (\evento -> \ciudad -> evento ciudad)
 -- Implementar una función que reciba una ciudad, un criterio de comparación y un evento, 
 -- de manera que nos diga si la ciudad tras el evento subió respecto a ese criterio. 
 
-data Criterio = CostoDeVida | Atracciones 
+data Criterio = CostoDeVida | Atracciones
 
 algoMejor :: Criterio -> Ciudad -> (Ciudad -> Ciudad) -> Bool
 algoMejor CostoDeVida ciudad evento = costoDeVida ciudad < (costoDeVida . evento) ciudad
@@ -168,7 +183,7 @@ algoMejor Atracciones ciudad  evento = (genericLength . atracciones) ciudad < (g
 -- Punto 5.3
 costoDeVidaQueSuba :: LosAniosPasan -> Ciudad -> Ciudad
 costoDeVidaQueSuba unAnio ciudad =  pasarPorListaDeEventos eventosbuenos ciudad
-    where 
+    where
         -- filter :: (Ciudad -> Ciudad -> Bool) -> [Ciudad -> Ciudad] -> [Ciudad -> Ciudad]
         eventosbuenos = filter (algoMejor CostoDeVida ciudad) (eventos unAnio)
 
@@ -176,7 +191,7 @@ costoDeVidaQueSuba unAnio ciudad =  pasarPorListaDeEventos eventosbuenos ciudad
 -- Punto 5.4
 costoDeVidaQueBaje :: LosAniosPasan -> Ciudad -> Ciudad
 costoDeVidaQueBaje unAnio ciudad = pasarPorListaDeEventos eventosmalos ciudad
-    where 
+    where
         -- filter :: (not . (Ciudad -> Ciudad -> Bool)) -> [Ciudad -> Ciudad] -> [Ciudad -> Ciudad]
         eventosmalos = filter (not . algoMejor CostoDeVida ciudad) (eventos unAnio)
 
@@ -204,31 +219,31 @@ listaDeEventosOrdenada _ _ = True
 foldDobleR :: (b->b->a->a)->a->[b]->a
 foldDobleR funcion casoBase (x1:x2:xs) = funcion x1 x2 (foldDobleR funcion casoBase (x2:xs))
 foldDobleR _ casoBase (x2:xs) = casoBase
-foldDobleR _ casoBase [] = casoBase 
+foldDobleR _ casoBase [] = casoBase
 
 -- Funciona bien esta!!!
 listaDeEventosOrdenada :: [Evento] -> Ciudad -> Bool
-listaDeEventosOrdenada lista ciudad = foldDobleR (\e1 -> \e2 -> \resto -> (costoDeVida . e1 $ ciudad) < (costoDeVida . e2 $ ciudad) && resto) True lista
+listaDeEventosOrdenada lista ciudad = foldDobleR (\e1 e2 resto -> (costoDeVida . e1 $ ciudad) < (costoDeVida . e2 $ ciudad) && resto) True lista
 
 -- Ahora a aplicarla al ejercicio con lo de los anios
 anioConCostoDeVidaAscendente :: LosAniosPasan -> Ciudad -> Bool
-anioConCostoDeVidaAscendente = listaDeEventosOrdenada . eventos  
+anioConCostoDeVidaAscendente = listaDeEventosOrdenada . eventos
 -- Notese que se puede utilizar la funcion foldDoble a DERECHA, pusto que && es conmutativo
 
 --Punto 6.2
 listaDeCiudadesOrdenadas :: [Ciudad] -> Evento -> Bool
-listaDeCiudadesOrdenadas ciudades evento = foldDobleR (\c1 -> \c2 -> \resto -> (costoDeVida . evento $ c1) < (costoDeVida . evento $ c2) && resto) True ciudades
+listaDeCiudadesOrdenadas ciudades evento = foldDobleR (\c1 c2 resto -> (costoDeVida . evento $ c1) < (costoDeVida . evento $ c2) && resto) True ciudades
 
 
 
 --Punto 6.3
 aniosOrdenados :: [LosAniosPasan] -> Ciudad -> Bool
-aniosOrdenados anios ciudad = foldDobleR (\a1 -> \a2 -> \resto -> (costoDeVida $ pasarPorAnio a1 ciudad) < (costoDeVida $ pasarPorAnio a2 ciudad) && resto) True anios
+aniosOrdenados anios ciudad = foldDobleR (\a1 a2 resto -> (costoDeVida $ pasarPorAnio a1 ciudad) < (costoDeVida $ pasarPorAnio a2 ciudad) && resto) True anios
 
 
 --Punto 7
 
-año2024 = LosAniosPasan 2024 ([atravesarCrisis, reevaluacion 7] ++ (map remodelacion [1..]))
+año2024 = LosAniosPasan 2024 ([atravesarCrisis, reevaluacion 7] ++ map remodelacion [1..])
 
 {- 
 Si, es posible, puesto que atravesar una crisis siempre reduce el costo
