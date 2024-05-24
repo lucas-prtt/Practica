@@ -132,14 +132,15 @@ detonarCiudadPersonalizada critReevaluacion tasaRemodelacion nombreAtraccion = r
 
 
 -- Punto 5 --
+-- 5.1
+
+
 -- Anios Ejemplo
 año2022 :: LosAniosPasan
 año2022 = LosAniosPasan 2022 [remodelacion 5, atravesarCrisis, reevaluacion 7]
 año2015 :: LosAniosPasan
 año2015 = LosAniosPasan 2015 []
-
---type Evento = Ciudad -> Ciudad
---Se podria implementar esto para que quede mas comodo
+--LosAnioPasan es un nombre horrible
 
 --Funciones
 pasarPorAnio :: LosAniosPasan -> Ciudad -> Ciudad
@@ -179,27 +180,64 @@ algoMejor Atracciones ciudad  evento = (genericLength . atracciones) ciudad < (g
 -- costoDeVidaQueSuba :: LosAniosPasan -> Ciudad -> Ciudad
 -- costoDeVidaQueSuba unAnio ciudad =  pasarPorListaDeEventos (filtrarEventos (eventos unAnio) (algoMejor costoDeVida ciudad) ) ciudad
 
+aplicarEventosFiltrados :: (Evento -> Bool) -> LosAniosPasan -> Ciudad -> Ciudad
+aplicarEventosFiltrados filtro unAnio =  pasarPorListaDeEventos eventosFiltrados
+    where
+        eventosFiltrados = filter filtro (eventos unAnio)
+--filter :: (Evento -> Bool) -> [Evento] -> [Evento]
+--filtro es de tipo evento a Bool:
+--Es conveniente declarar a filtro como Ciudad->Evento->Bool y aplicar parcialmente Ciudad sobre la ciudad usada en la funcion aplicarEventosFiltrados
+--Eso permite evaluar el efecto de un evento en la ciudad en la que se aplican los eventos 
+
+
+
 
 -- Punto 5.3
+{-                   Version escrita directamente 
 costoDeVidaQueSuba :: LosAniosPasan -> Ciudad -> Ciudad
 costoDeVidaQueSuba unAnio ciudad =  pasarPorListaDeEventos eventosbuenos ciudad
     where
         -- filter :: (Ciudad -> Ciudad -> Bool) -> [Ciudad -> Ciudad] -> [Ciudad -> Ciudad]
-        eventosbuenos = filter (algoMejor CostoDeVida ciudad) (eventos unAnio)
+        eventosbuenos = filter (algoMejor CostoDeVida ciudad) (eventos unAnio) -}
+
+
+eventoAumentaCostoDeVida :: Ciudad -> Evento -> Bool
+eventoAumentaCostoDeVida ciudad evento = costoDeVida ciudad < costoDeVida (evento ciudad) 
+-- con aplicarEventosFiltrados
+costoDeVidaQueSuba :: LosAniosPasan -> Ciudad -> Ciudad
+costoDeVidaQueSuba unAnio ciudad = aplicarEventosFiltrados (eventoAumentaCostoDeVida ciudad) unAnio ciudad
 
 
 -- Punto 5.4
-costoDeVidaQueBaje :: LosAniosPasan -> Ciudad -> Ciudad
+{- costoDeVidaQueBaje :: LosAniosPasan -> Ciudad -> Ciudad
 costoDeVidaQueBaje unAnio ciudad = pasarPorListaDeEventos eventosmalos ciudad
     where
         -- filter :: (not . (Ciudad -> Ciudad -> Bool)) -> [Ciudad -> Ciudad] -> [Ciudad -> Ciudad]
         eventosmalos = filter (not . algoMejor CostoDeVida ciudad) (eventos unAnio)
+ -}
 
--- Punto 5.5                
+-- con aplicarEventosFiltrados
+costoDeVidaQueBaje :: LosAniosPasan -> Ciudad -> Ciudad
+costoDeVidaQueBaje unAnio ciudad = aplicarEventosFiltrados (not . eventoAumentaCostoDeVida ciudad) unAnio ciudad 
+
+-- Punto 5.5    
+{-             
 valorQueSuba:: LosAniosPasan -> Ciudad -> Ciudad
 valorQueSuba unAnio ciudad = pasarPorListaDeEventos eventosCapitalistas ciudad
     where                                       -- Ciudad antes          <       Ciudad Despues
         eventosCapitalistas = filter (\evento -> valorDeUnaCiudad (evento ciudad) > valorDeUnaCiudad ciudad) (eventos unAnio)
+ -}
+-- con aplicarEventosFiltrados
+
+valorQueSuba :: LosAniosPasan -> Ciudad -> Ciudad
+valorQueSuba unAnio ciudad = aplicarEventosFiltrados (eventoAumentoValorCiudad ciudad) unAnio ciudad
+
+eventoAumentoValorCiudad :: Ciudad -> Evento -> Bool
+eventoAumentoValorCiudad ciudad evento = valorDeUnaCiudad ciudad < valorDeUnaCiudad (evento ciudad)
+
+
+
+
 
 --Punto 6.1
 --Listas para probar
