@@ -1,0 +1,13 @@
+import os
+import time
+clear = lambda: os.system("cls")
+clear()
+
+
+
+name = input("Name: ")
+surname = input("Surname: ")
+print("Te llamás {} {}.".format(name, surname))
+print("Te llamás " + name + " " + surname + ".")
+print("Te llamás %s %s." %(name, surname))
+time.sleep(2)

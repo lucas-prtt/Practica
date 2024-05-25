@@ -1,0 +1,32 @@
+a = 1
+b = 2
+c = 3
+
+print(a+b+c)
+print(a*b*c)
+print(c/b)
+print (a/b)
+print(10 ** 5)
+print(23//4)
+print(23%5)
+
+print(3<4)
+print(3>4)
+#a = input()
+print(a)
+
+print(3>=3)
+print(4<=5)
+print(3==3)
+print(5!=1)
+print(5!=5)
+print("Hola">"Messi")
+
+print(a==a and b==a)
+print(a==a or b==a)
+print(not a==b)
+print("\n")
+print(bool(a==a) ^ bool(a==a))
+print(bool(a==a) ^ bool(a==b))
+print(bool(a==b) ^ bool(a==a))
+print(bool(a==b) ^ bool(a==b))

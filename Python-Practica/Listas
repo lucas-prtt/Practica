@@ -1,0 +1,13 @@
+from collections import Counter
+import os
+clear = lambda: os.system("cls")
+clear()
+lista = [15, 20, 25, 30]
+print(type(lista))
+print(lista)
+lista.insert(2, 35)
+lista.append(45)
+print(lista)
+print(lista[1])
+print(Counter(lista))
+print(len(lista))
