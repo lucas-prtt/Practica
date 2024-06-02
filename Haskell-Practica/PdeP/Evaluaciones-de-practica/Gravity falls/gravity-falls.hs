@@ -14,17 +14,15 @@ data Criatura = Fantasma{
     cantidad :: Integer
 } | SiempreDetras deriving Show
 
-tenerSoplaHojas :: Requisito
-tenerSoplaHojas = elem "Soplahojas" . inventario
 
 dipper :: Persona
-dipper = Persona 16 ["Diario", "Gorra"] 5
+dipper = Persona 12 ["Diario", "Gorra", "Disfraz de oveja"] 5
 
 mabel :: Persona
-mabel = Persona 15 ["Soplahojas"] 4
+mabel = Persona 13 ["Soplahojas"] 4
 
 gasparin :: Criatura
-gasparin = Fantasma 7 tenerSoplaHojas
+gasparin = Fantasma 7 (flip tieneObjeto "Soplahojas")
 
 detrasDeTiImbecil :: Criatura
 detrasDeTiImbecil = SiempreDetras
@@ -46,11 +44,37 @@ enfrentar humano criatura
     | otherwise = modificarExperiencia (+1) humano
 
 gana :: Persona->Criatura->Bool
-gana persona (Gnomos _) = elem "Soplahojas" $ inventario persona
+gana persona (Gnomos _) = tieneObjeto persona "Soplahojas" 
 gana persona SiempreDetras = False
 gana persona fantasma@Fantasma{} = asuntoPendiente fantasma persona
 
+tieneObjeto :: Persona -> Item -> Bool
+tieneObjeto = flip elem . inventario
+
 modificarExperiencia :: (Integer->Integer)->Persona->Persona
 modificarExperiencia operacion persona = persona{experiencia = operacion . experiencia $ persona}
+
+enfrentarCriaturas :: Persona -> [Criatura] -> Persona
+enfrentarCriaturas = foldl enfrentar  
+
+ejercitoDeGnomos :: Criatura
+ejercitoDeGnomos = Gnomos 10
+
+elSiempreDetras :: Criatura
+elSiempreDetras = SiempreDetras
+
+fantasmaPegi13 :: Criatura
+fantasmaPegi13 = Fantasma 3 ovejaInimputable
+ovejaInimputable :: Persona -> Bool
+ovejaInimputable persona = ((<13) . edadPersona) persona && tieneObjeto persona "Disfraz de oveja"
+
+fantasmaPrincipiante :: Criatura
+fantasmaPrincipiante = Fantasma 1 ((>10) . experiencia)
+
+grupoDeCriaturas :: [Criatura]
+grupoDeCriaturas = [elSiempreDetras, ejercitoDeGnomos, fantasmaPegi13, fantasmaPrincipiante]
+
+--Para enfrentar a estas criaturas se puede escribir en consola
+--enfrentarCriaturas dipper grupoDeCriaturas
 
 
