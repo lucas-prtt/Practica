@@ -77,4 +77,11 @@ grupoDeCriaturas = [elSiempreDetras, ejercitoDeGnomos, fantasmaPegi13, fantasmaP
 --Para enfrentar a estas criaturas se puede escribir en consola
 --enfrentarCriaturas dipper grupoDeCriaturas
 
+zipWithIf :: (a -> b -> b) -> (b -> Bool) -> [a] -> [b] -> [b]
+zipWithIf funcion condicion (xA:xAs) (xB:xBs) 
+    | condicion xB = funcion xA xB : zipWithIf funcion condicion xAs xBs
+    | otherwise = xB : zipWithIf funcion condicion (xA:xAs) xBs
+zipWithIf _ _ _ _ = []
+
+
 
