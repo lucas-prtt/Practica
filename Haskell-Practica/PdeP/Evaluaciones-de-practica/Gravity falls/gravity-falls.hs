@@ -87,8 +87,20 @@ abecedarioDesde :: Char -> [Char]
 abecedarioDesde letra = [letra..'z'] ++ ['a'..letra]
 
 desencriptarLetra :: Char -> Char -> Char
-desencriptarLetra clave letra = abecedarioDesde clave !! posicionAbecedario letra
+desencriptarLetra clave letra = abecedarioDesde letra !! (posicionAbecedario 'z' + 1 - posicionAbecedario clave)
 
 posicionAbecedario :: Char -> Int
 posicionAbecedario letra = fromEnum letra - fromEnum 'a' 
+
+cesar :: Char -> String -> String
+cesar clave texto = vigenére ([clave]) texto
+
+--map (flip cesar "jrzel zrfaxal") ['a'..'z']
+
+vigenére :: String -> String -> String
+vigenére clave texto = zipWithIf desencriptarLetra (flip elem (abecedarioDesde 'a')) (cycle clave) texto
+
+--ghci> vigenére "pdep" "wrpp, irhd to qjcgs"
+--"hola, todo el mundo"
+
 
