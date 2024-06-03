@@ -1,8 +1,8 @@
 import Data.List (genericLength)
 
 data Turista = Turista{
-    cansancioDeTurista :: Integer,
-    estresDeTurista :: Integer,
+    cansancioDeTurista :: Int,
+    estresDeTurista :: Int,
     turistaAcompañado :: Bool,
     idiomasDeTurista :: [Idioma]
 } deriving (Eq, Show)
@@ -15,10 +15,10 @@ irALaPlaya turista
     | not . turistaAcompañado $ turista = modificarCansancio (subtract 5) turista
     | otherwise        = modificarEstres (subtract 1) turista
 
-modificarCansancio :: (Integer->Integer) -> Turista -> Turista
+modificarCansancio :: (Int->Int) -> Turista -> Turista
 modificarCansancio operacion turista = turista{cansancioDeTurista = operacion . cansancioDeTurista $ turista} 
 
-modificarEstres :: (Integer->Integer) -> Turista -> Turista
+modificarEstres :: (Int->Int) -> Turista -> Turista
 modificarEstres operacion turista = turista{estresDeTurista = operacion . estresDeTurista $ turista} 
 
 modificarAcompañamiento :: Bool -> Turista -> Turista
@@ -33,7 +33,7 @@ apreciar elemento = modificarEstres (subtract . genericLength $ elemento)
 hablarIdioma :: Idioma -> Turista -> Turista
 hablarIdioma idioma = agregarIdioma idioma . modificarAcompañamiento True
 
-caminar :: Integer -> Turista -> Turista
+caminar :: Int -> Turista -> Turista
 caminar minutos = modificarCansancio (+ intensidad) . modificarEstres (subtract intensidad)
     where intensidad = div minutos 4
 
@@ -51,17 +51,31 @@ beto = Turista 15 15 False ["Aleman"]
 cathi :: Turista
 cathi = agregarIdioma "Catalan" beto
 
-modificarEstresPorcentaje :: Integer -> Turista -> Turista
+modificarEstresPorcentaje :: Int -> Turista -> Turista
 modificarEstresPorcentaje porcentaje turista = modificarEstres (subtract . flip div 100 . (* (porcentaje + 100) ). estresDeTurista $ turista) turista
 
 
 hacerExcursion :: (Turista -> Turista) -> Turista -> Turista
-hacerExcursion actividad = actividad . modificarEstresPorcentaje (-10)
+hacerExcursion actividad = modificarEstresPorcentaje (-10) . actividad
+
+type Indice = Turista -> Int
+
+deltaSegun :: (a -> Int) -> a -> a -> Int
+deltaSegun f algo1 algo2 = f algo1 - f algo2
+
+type Excursion = Turista -> Turista
+
+deltaExcursionSegun :: Indice -> Turista -> Excursion -> Int
+deltaExcursionSegun indice turista excursion = deltaSegun indice turista (excursion turista)
 
 
+esEducativa :: Turista -> Excursion -> Bool 
+esEducativa turista = (>0) . deltaExcursionSegun cuantosIdiomas turista
 
+cuantosIdiomas :: Turista -> Int
+cuantosIdiomas = genericLength . idiomasDeTurista
 
-
-
+esDesestresante :: Turista -> Excursion -> Bool
+esDesestresante turista = (<0) . deltaExcursionSegun estresDeTurista turista
 
 
