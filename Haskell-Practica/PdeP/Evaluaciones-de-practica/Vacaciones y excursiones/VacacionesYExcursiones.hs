@@ -118,4 +118,27 @@ efectividad :: Tour -> [Turista] -> Int
 efectividad tour = sum . map (espiritualidad tour) . filter (flip esTourConvincente tour)
 
 
+visitarInfinitasPlayas :: Tour
+visitarInfinitasPlayas = repeat irALaPlaya
+
+-- ghci> esTourConvincente ana visitarInfinitasPlayas
+
+-- En el caso de ana, como esta acompañada, este tour reducira su cansancio, mas no su estrés
+-- Por lo tanto nunca que vaya a la playa pensará que la excursion fue convincente
+-- Al analizar si este tour es convincente, se analizaran todos los elementos hasta que uno sea convincente
+-- De este modo, nunca dejará de evaluar si ir a una playa es convincente
+
+-- ghci> esTourConvincente beto visitarInfinitasPlayas
+
+-- En el caso de beto, como no esta acompañado, este tour reducira su estres
+-- Al analizar si es convincente, será verdadero que el estres se redujo, pero sigue sin estar acompañado
+-- Como siempre que vaya a la playa terminara solo, nunca ir a la playa será convincente
+-- Al analizar si el tour es convincente, se analizaran todas las excursiones hasta que una sea convincentes
+-- De este modo, tampoco dejará nunca de evaluar 
+
+-- ghci> efectividad visitarInfinitasPlayas []
+
+-- Si se analiza la efectividad de que nadie visite infinitas playas, se obtiene 0
+
+
 
