@@ -44,6 +44,21 @@ paseoEnBarco Fuerte = modificarCansancio (+10) . modificarEstres (+6)
 paseoEnBarco Moderada = id
 paseoEnBarco Tranquila = caminar 10 . apreciar "mar" . hablarIdioma "Aleman"
 
+ana :: Turista
+ana = Turista 0 21 True ["Español"]
+beto :: Turista
+beto = Turista 15 15 False ["Aleman"]
+cathi :: Turista
+cathi = agregarIdioma "Catalan" beto
+
+modificarEstresPorcentaje :: Integer -> Turista -> Turista
+modificarEstresPorcentaje porcentaje turista = modificarEstres (subtract . flip div 100 . (* (porcentaje + 100) ). estresDeTurista $ turista) turista
+
+
+hacerExcursion :: (Turista -> Turista) -> Turista -> Turista
+hacerExcursion actividad = actividad . modificarEstresPorcentaje (-10)
+
+
 
 
 
