@@ -93,12 +93,12 @@ posicionAbecedario :: Char -> Int
 posicionAbecedario letra = fromEnum letra - fromEnum 'a' 
 
 cesar :: Char -> String -> String
-cesar clave texto = vigenére ([clave]) texto
+cesar clave = vigenére [clave]
 
 --map (flip cesar "jrzel zrfaxal") ['a'..'z']
 
 vigenére :: String -> String -> String
-vigenére clave texto = zipWithIf desencriptarLetra (flip elem (abecedarioDesde 'a')) (cycle clave) texto
+vigenére clave = zipWithIf desencriptarLetra (flip elem (abecedarioDesde 'a')) (cycle clave)
 
 --ghci> vigenére "pdep" "wrpp, irhd to qjcgs"
 --"hola, todo el mundo"
