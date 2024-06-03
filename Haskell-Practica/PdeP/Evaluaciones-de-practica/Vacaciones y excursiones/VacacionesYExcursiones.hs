@@ -98,3 +98,17 @@ realizarTour tour = pasarPorExcursiones tour . modificarEstresPorcentaje 10
 
 pasarPorExcursiones :: Tour -> Turista -> Turista
 pasarPorExcursiones = flip (foldl (flip hacerExcursion))
+
+esExcursionConvincente :: Excursion -> Turista -> Bool
+esExcursionConvincente excursion turista =  (&& esDesestresante turista excursion) . turistaAcompañado . hacerExcursion excursion $ turista
+
+esTourConvincente :: Turista -> Tour -> Bool
+esTourConvincente turista = any (flip esExcursionConvincente turista)
+
+algunTourConvincente :: Turista -> [Tour] -> Bool
+algunTourConvincente turista = any (esTourConvincente turista)
+
+
+
+
+
