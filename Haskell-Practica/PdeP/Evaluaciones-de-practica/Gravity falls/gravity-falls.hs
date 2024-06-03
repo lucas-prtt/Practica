@@ -83,5 +83,12 @@ zipWithIf funcion condicion (xA:xAs) (xB:xBs)
     | otherwise = xB : zipWithIf funcion condicion (xA:xAs) xBs
 zipWithIf _ _ _ _ = []
 
+abecedarioDesde :: Char -> [Char]
+abecedarioDesde letra = [letra..'z'] ++ ['a'..letra]
 
+desencriptarLetra :: Char -> Char -> Char
+desencriptarLetra clave letra = abecedarioDesde clave !! posicionAbecedario letra
+
+posicionAbecedario :: Char -> Int
+posicionAbecedario letra = fromEnum letra - fromEnum 'a' 
 
