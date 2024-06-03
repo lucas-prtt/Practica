@@ -108,7 +108,14 @@ esTourConvincente turista = any (flip esExcursionConvincente turista)
 algunTourConvincente :: Turista -> [Tour] -> Bool
 algunTourConvincente turista = any (esTourConvincente turista)
 
+cansancioMasEstres :: Turista -> Int
+cansancioMasEstres turista = cansancioDeTurista turista + estresDeTurista turista
 
+espiritualidad :: Tour -> Turista -> Int
+espiritualidad tour turista = deltaSegun cansancioMasEstres turista (realizarTour tour turista)
+
+efectividad :: Tour -> [Turista] -> Int
+efectividad tour = sum . map (espiritualidad tour) . filter (flip esTourConvincente tour)
 
 
 
