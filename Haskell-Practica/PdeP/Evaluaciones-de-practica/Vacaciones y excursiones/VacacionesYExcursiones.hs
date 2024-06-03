@@ -16,13 +16,13 @@ irALaPlaya turista
     | otherwise        = modificarEstres (subtract 1) turista
 
 modificarCansancio :: (Int->Int) -> Turista -> Turista
-modificarCansancio operacion turista = turista{cansancioDeTurista = operacion . cansancioDeTurista $ turista} 
+modificarCansancio operacion turista = turista{cansancioDeTurista = operacion . cansancioDeTurista $ turista}
 
 modificarEstres :: (Int->Int) -> Turista -> Turista
-modificarEstres operacion turista = turista{estresDeTurista = operacion . estresDeTurista $ turista} 
+modificarEstres operacion turista = turista{estresDeTurista = operacion . estresDeTurista $ turista}
 
 modificarAcompañamiento :: Bool -> Turista -> Turista
-modificarAcompañamiento acompañado turista = turista{turistaAcompañado = acompañado} 
+modificarAcompañamiento acompañado turista = turista{turistaAcompañado = acompañado}
 
 agregarIdioma :: Idioma -> Turista -> Turista
 agregarIdioma idioma turista = turista{idiomasDeTurista = (idioma :) . idiomasDeTurista $ turista}
@@ -69,7 +69,7 @@ deltaExcursionSegun :: Indice -> Turista -> Excursion -> Int
 deltaExcursionSegun indice turista excursion = deltaSegun indice turista (excursion turista)
 
 
-esEducativa :: Turista -> Excursion -> Bool 
+esEducativa :: Turista -> Excursion -> Bool
 esEducativa turista = (>0) . deltaExcursionSegun cuantosIdiomas turista
 
 cuantosIdiomas :: Turista -> Int
@@ -78,4 +78,23 @@ cuantosIdiomas = genericLength . idiomasDeTurista
 esDesestresante :: Turista -> Excursion -> Bool
 esDesestresante turista = (<0) . deltaExcursionSegun estresDeTurista turista
 
+type Tour = [Excursion]
 
+completo :: Tour
+completo = [caminar 20, apreciar "cascada", caminar 40, irALaPlaya, hablarIdioma "melmacquiano"]
+
+ladoB :: Excursion -> Tour
+ladoB excursion = [paseoEnBarco Tranquila, excursion, caminar 120]
+
+islaVecina :: Marea -> Tour
+islaVecina Fuerte = viajarHacerYVolver Fuerte $ apreciar "algo"
+islaVecina marea = viajarHacerYVolver marea irALaPlaya
+
+viajarHacerYVolver :: Marea -> Excursion -> Tour 
+viajarHacerYVolver marea excursion = [paseoEnBarco marea, excursion, paseoEnBarco marea]
+
+realizarTour :: Tour -> Turista -> Turista
+realizarTour tour = pasarPorExcursiones tour . modificarEstresPorcentaje 10 
+
+pasarPorExcursiones :: Tour -> Turista -> Turista
+pasarPorExcursiones = flip (foldl (flip hacerExcursion))
