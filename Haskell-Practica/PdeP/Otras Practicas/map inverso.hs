@@ -12,3 +12,5 @@ listaDeOperaciones = [(+7), (subtract 78), (flip div 2)]
 --ghci> map (hacerSobre 2) listaDeOperaciones 
 --[9,-76,1]
 
+
+
