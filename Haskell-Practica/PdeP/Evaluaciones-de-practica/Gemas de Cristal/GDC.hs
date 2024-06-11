@@ -64,6 +64,14 @@ gemaVidente = Gema "Esa De Color Azul" 3.14 vidente
 gemaDescuidada :: Gema
 gemaDescuidada = Gema "La de color Rojo" 20 (relajada 600)
 
+gemaGana :: Situacion -> Gema -> Gema -> Bool
+gemaGana sit ganador perdedor = masFuerte ganador perdedor && mejorEfectoSobreSituacion sit ganador perdedor
+
+mejorEfectoSobreSituacion :: Situacion -> Gema -> Gema -> Bool
+mejorEfectoSobreSituacion sit ganador perdedor = mejorSituacion (personalidad ganador sit) (personalidad perdedor sit)
+
+masFuerte :: Gema -> Gema -> Bool
+masFuerte ganador perdedor = fuerza ganador >= fuerza perdedor
 
 
 
