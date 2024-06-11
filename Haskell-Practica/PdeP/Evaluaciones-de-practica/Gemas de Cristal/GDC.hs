@@ -44,6 +44,7 @@ aspectoCorrespondienteMejor situacion aspecto  = mejorAspecto aspecto $ buscarAs
 modificarSituacion :: String -> (Float -> Float)-> Situacion -> Situacion
 modificarSituacion tipo alteracion sit = flip reemplazarAspecto sit . modificarAspecto alteracion . buscarAspectoDeTipo tipo $ sit
 
+--2
 
 data Gema = Gema {
     nombre :: String,
@@ -64,6 +65,8 @@ gemaVidente = Gema "Esa De Color Azul" 3.14 vidente
 gemaDescuidada :: Gema
 gemaDescuidada = Gema "La de color Rojo" 20 (relajada 600)
 
+--3 
+
 gemaGana :: Situacion -> Gema -> Gema -> Bool
 gemaGana sit ganador perdedor = masFuerte ganador perdedor && mejorEfectoSobreSituacion sit ganador perdedor
 
@@ -72,6 +75,8 @@ mejorEfectoSobreSituacion sit ganador perdedor = mejorSituacion (personalidad ga
 
 masFuerte :: Gema -> Gema -> Bool
 masFuerte ganador perdedor = fuerza ganador >= fuerza perdedor
+
+--4
 
 fusionar :: Situacion -> Gema -> Gema -> Gema
 fusionar sit g1 g2 = Gema (nombreDeFusion g1 g2) (fuerzaDeFusion sit g1 g2) (personalidadDeFusion g1 g2)
@@ -99,5 +104,14 @@ sumarPersonalidades g1 g2 = personalidad g1 . personalidad g2
 
 personalidadDeFusion :: Gema -> Gema -> Personalidad
 personalidadDeFusion g1 g2 = sumarPersonalidades g1 g2 . map (modificarAspecto $ subtract 10)
+
+--5
+
+fusionGrupal :: Situacion -> [Gema] -> Gema
+fusionGrupal situacion = foldl1 $ fusionar situacion
+
+--6
+
+
 
 
