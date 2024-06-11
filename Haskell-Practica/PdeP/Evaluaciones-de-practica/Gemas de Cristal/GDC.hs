@@ -112,6 +112,11 @@ fusionGrupal situacion = foldl1 $ fusionar situacion
 
 --6
 
+--foo :: Int -> (Int -> Int) -> [Int] -> z
+--foo :: Int -> (Int -> Bool) -> ([Int]->[Int]) -> z
+--foo :: Int -> (Int -> Bool) -> [Int] -> z
+--foo :: [Int] -> ([Int] -> Int) -> ([Int] -> [Int]) -> [Int] -> z
 
 
-
+--Como puedo determinar cual tipo es el correcto si despues me dice que detecte los errores?
+--Podrían estar todos incorrectos y ser de un tipo cualquiera
