@@ -39,6 +39,7 @@ aspectoCorrespondienteMejor situacion aspecto  = mejorAspecto aspecto $ buscarAs
 
 --1c
 
-
+modificarSituacion :: String -> (Float -> Float)-> Situacion -> Situacion
+modificarSituacion tipo alteracion sit = flip reemplazarAspecto sit . modificarAspecto alteracion . buscarAspectoDeTipo tipo $ sit
 
 
