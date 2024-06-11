@@ -73,5 +73,31 @@ mejorEfectoSobreSituacion sit ganador perdedor = mejorSituacion (personalidad ga
 masFuerte :: Gema -> Gema -> Bool
 masFuerte ganador perdedor = fuerza ganador >= fuerza perdedor
 
+fusionar :: Situacion -> Gema -> Gema -> Gema
+fusionar sit g1 g2 = Gema (nombreDeFusion g1 g2) (fuerzaDeFusion sit g1 g2) (personalidadDeFusion g1 g2)
+
+nombreDeFusion :: Gema -> Gema -> String
+nombreDeFusion g1 g2
+    |nombre g1 == nombre g2 = nombre g1
+    |otherwise = nombre g1 ++ nombre g2
+
+fuerzaDeFusion :: Situacion ->  Gema -> Gema -> Float
+fuerzaDeFusion sit g1 g2 
+    |sonCompatibles sit g1 g2 = (*10) . (+ fuerza g1) $ fuerza g2
+    |otherwise = (*7) . fuerza $ gemaDominante g1 g2 
+
+sonCompatibles :: Situacion -> Gema -> Gema -> Bool
+sonCompatibles situacion g1 g2 = mejorSituacion (sumarPersonalidades g1 g2 situacion) (personalidadDeFusion g1 g2 situacion)
+
+gemaDominante :: Gema -> Gema -> Gema
+gemaDominante g1 g2
+    |fuerza g1 > fuerza g2 = g1
+    |otherwise = g2
+
+sumarPersonalidades :: Gema -> Gema -> Personalidad
+sumarPersonalidades g1 g2 = personalidad g1 . personalidad g2
+
+personalidadDeFusion :: Gema -> Gema -> Personalidad
+personalidadDeFusion g1 g2 = sumarPersonalidades g1 g2 . map (modificarAspecto $ subtract 10)
 
 
