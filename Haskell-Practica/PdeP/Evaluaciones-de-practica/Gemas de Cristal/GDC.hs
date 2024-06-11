@@ -1,3 +1,5 @@
+import Text.Show.Functions
+
 data Aspecto = UnAspecto {
     tipoDeAspecto :: String,
     grado :: Float
@@ -41,5 +43,27 @@ aspectoCorrespondienteMejor situacion aspecto  = mejorAspecto aspecto $ buscarAs
 
 modificarSituacion :: String -> (Float -> Float)-> Situacion -> Situacion
 modificarSituacion tipo alteracion sit = flip reemplazarAspecto sit . modificarAspecto alteracion . buscarAspectoDeTipo tipo $ sit
+
+
+data Gema = Gema {
+    nombre :: String,
+    fuerza :: Float,
+    personalidad :: Personalidad
+} deriving Show
+
+type Personalidad = Situacion -> Situacion
+
+vidente :: Personalidad
+vidente = modificarSituacion "Incertidumbre" (/2) . modificarSituacion "Tension" (subtract 10)
+relajada :: Float -> Personalidad
+relajada nivel = modificarSituacion "Tension" (subtract 30) . modificarSituacion "Peligro" (+nivel)
+
+gemaVidente :: Gema
+gemaVidente = Gema "Esa De Color Azul" 3.14 vidente
+
+gemaDescuidada :: Gema
+gemaDescuidada = Gema "La de color Rojo" 20 (relajada 600)
+
+
 
 
