@@ -7,6 +7,8 @@ def recordar():
         lista.append(temp) 
         temp = int(input())
 
+
+
     print("Do you want to sort??\n(Y/N)")
     rta = ''
     while rta not in ('y', 'n', 'Y', 'N') :
