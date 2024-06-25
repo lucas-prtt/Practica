@@ -1,13 +1,12 @@
 energia(cajaPuerta).
 
 energia(Aparato):-
-    conexion(Fuente, Aparato),
+    conectados(Fuente, Aparato),
     energia(Fuente).
 
 
-%conexion(A, B):-
-%   conexion(B, A).
-% Esto por algun motivo no anda bien.
+
+
 conexion(cajaPuerta, lampara1).
 conexion(lampara1, lampara2).
 conexion(lampara2, dosTomacorrientesVacios).
@@ -17,8 +16,15 @@ conexion(tomaCorrientesBajoFreezer, tomaCorrientesHeladerita).
 conexion(lampara1, tomaCorrientesBajoHeladerita).
 conexion(freezer, lampara2).
 
+%Asi tampoco anda
+conectados(A, B):-
+    conexion(B, A).
+conectados(A, B):-
+    conexion(A, B).
+%No se como hacer que deje de ananlizar infinitamente
+
 cortoCircuito(Aparato):-
-    conexion(Aparato, Corto),
+    conectados(Aparato, Corto),
     cortoCircuito(Corto).
 
 luz(Aparato):-
