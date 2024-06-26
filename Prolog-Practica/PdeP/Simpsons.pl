@@ -35,7 +35,8 @@ compartenMadre(UnaPersona, OtraPersona):-
 
 hermanos(UnaPersona, SuHermano):-
     compartenPadre(UnaPersona, SuHermano),
-    compartenMadre(UnaPersona, SuHermano).
+    compartenMadre(UnaPersona, SuHermano),
+    UnaPersona\=SuHermano.
 
 medioHermanos(UnaPersona, SuMedioHermano):-
     compartenPadre(UnaPersona, SuMedioHermano),
