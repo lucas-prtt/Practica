@@ -17,7 +17,8 @@ viaja(vale, calafate).
 viaja(vale, elBolson).
 
 viaja(martu, Lugar):-
-    viaja(nico, Lugar),
+    viaja(nico, Lugar).
+viaja(martu, Lugar):-
     viaja(alf, Lugar).
 
 persona(Turista):-
@@ -89,13 +90,34 @@ seCruzaron(UnaPersona, OtraPersona):-
     viaja(OtraPersona, MismoDestino).
     %UnaPersona \= OtraPersona.
 
+%%%%%%%%%%%%%
+%% Punto 4 %%
+%%%%%%%%%%%%%
+
+costo(sarmiento, 100).
+costo(esquel, 150).
+costo(pehuenia, 180).
+costo(sanMartin, 150).
+costo(camarones, 135).
+costo(playasDoradas, 170).
+costo(bariloche, 140).
+costo(calafate, 240).
+costo(elBolson, 145).
+costo(marDelPlata, 140).
+
+gasolero(Turista):-
+    persona(Turista),
+    forall(viaja(Turista, Ubicacion), destinoGasolero(Ubicacion)).
+
+destinoGasolero(Destino):-
+    costo(Destino, Costo),
+    Costo<160.
+
+%%%%%%%%%%%%%
+%% Punto 5 %%
+%%%%%%%%%%%%%
 
 
-
-
-
-
-
-
-
+% itinerario(Persona, Itinerario)
+% Esto es lo de explosion combinatoria???
 
