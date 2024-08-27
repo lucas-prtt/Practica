@@ -12,11 +12,16 @@ viaja(dodain, playasDoradas).
 viaja(alf, bariloche).
 viaja(alf, sanMartin).
 viaja(alf, elBolson).
+viaja(nico, marDelPlata).
+viaja(vale, calafate).
+viaja(vale, elBolson).
 
 viaja(martu, Lugar):-
     viaja(nico, Lugar),
     viaja(alf, Lugar).
-% Independientemente de que no se haya definido a donde viaja nico, este predicado permite definir a donde viajara martu
+
+persona(Turista):-
+    viaja(Turista, _).
 
 % Como Juan no sabe a donde ir no se lo puede incluir
 
@@ -27,6 +32,62 @@ viaja(martu, Lugar):-
 %%%%%%%%%%%%%
 %% Punto 2 %%
 %%%%%%%%%%%%%
+
+
+
+% FORMATO: atraccion(Ubicacion, tipoDeAtraccion(Cualidades))
+
+
+atraccion(pehuenia, parqueNacional(elBosqueVerde)).
+atraccion(bariloche, cerro(otto, 2001)).
+atraccion(camarones, cuerpoAgua(rio, conPesca, 13)).
+atraccion(playasDoradas, playa(12)).
+atraccion(elBolson, excursion(explorandoUnaFabricaDeBolsas)).
+
+atraccion(esquel, parqueNacional(losAlerces)).
+atraccion(esquel, excursion(trevellin)).
+atraccion(esquel, excursion(trochita)).
+atraccion(pehuenia, cerro(bateaMahuida, 2000)).
+atraccion(pehuenia, cuerpoAgua(moquehue, conPesca, 14)).
+atraccion(pehuenia, cuerpoAgua(alumine, conPesca, 19)).
+
+
+esCopado(cerro(_, Altura)):-
+    Altura>2000.
+esCopado(cuerpoAgua(_, conPesca, _)).
+esCopado(cuerpoAgua(_, _, Temperatura)):-
+    Temperatura>20.
+esCopado(plalla(DeltaMarea)):-
+    DeltaMarea<5.
+esCopado(excursion(Nombre)):-
+    string_length(Nombre, Letras),
+    Letras>7.
+esCopado(parqueNacional(_)).
+
+vacacionesCopadas(Turista):-
+    persona(Turista),
+    forall(viaja(Turista, Ubicacion), algunaAtraccionCopada(Ubicacion)).
+
+algunaAtraccionCopada(Ubicacion):-
+    atraccion(Ubicacion, Atraccion),
+    esCopado(Atraccion).
+
+%%%%%%%%%%%%%
+%% Punto 3 %%
+%%%%%%%%%%%%%
+
+noSeCruzaron(UnaPersona, OtraPersona):-
+    persona(UnaPersona), 
+    persona(OtraPersona),
+    %UnaPersona\=OtraPersona,
+    not(seCruzaron(UnaPersona, OtraPersona)).
+
+%Si se quiere que seCruzaron funcione de manera correcta individualmente, agregar la parte comentada
+
+seCruzaron(UnaPersona, OtraPersona):-
+    viaja(UnaPersona, MismoDestino),
+    viaja(OtraPersona, MismoDestino).
+    %UnaPersona \= OtraPersona.
 
 
 
