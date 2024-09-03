@@ -24,7 +24,8 @@ estaAtendiendo(Persona, Dia, Hora):-
     between(Inicio, Fin, Hora).
 
 kiosquero(Persona):-
-    atiende(Persona, _).
+    horario(Persona, _).
+kiosquero(vale). %% Para que solo ocurra una vez cada una lo hago con horarios
 
 sola(Persona, Dia, Hora):-
     estaAtendiendo(Persona, Dia, Hora),
@@ -32,6 +33,19 @@ sola(Persona, Dia, Hora):-
     Persona\=OtraPersona,
     not(estaAtendiendo(OtraPersona, Dia, Hora)).
 
+kiosqueros(Kiosqueros):-
+    findall(Kiosquero, kiosquero(Kiosquero), Kiosqueros).
+
+posiblesKiosqueros(Kiosqueros, Dia):-
+    kiosqueros(Todos),
+    auxiliarPosiblesKiosqueros(Kiosqueros, Dia, Todos).
+
+auxiliarPosiblesKiosqueros([],_,[]).
+auxiliarPosiblesKiosqueros([KiosqueroValido|Seleccion], Dia, [KiosqueroValido|Resto]):-
+    estaAtendiendo(KiosqueroValido, Dia, _),
+    auxiliarPosiblesKiosqueros(Seleccion, Dia, Resto).
+auxiliarPosiblesKiosqueros(Seleccion, Dia ,[_|Resto]):-
+    auxiliarPosiblesKiosqueros(Seleccion, Dia, Resto).
 
 
 
