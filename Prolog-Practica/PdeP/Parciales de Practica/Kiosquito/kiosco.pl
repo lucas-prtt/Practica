@@ -50,6 +50,29 @@ auxiliarPosiblesKiosqueros(Seleccion, Dia ,[_|Resto]):-
 
 
 
+ventas(dodain, fecha(10, 8), [golosinas(1200), cigarrillos([jockey]), golosinas(50)]).
+ventas(dodain, fecha(12, 8), [bebidas(alcoholicas, 8), bebidas(noAlcoholicas, 1), golosinas(10)]).
+ventas(martu, fecha(12, 8), [golosinas(1000), cigarrillos([chesterfield, colorado, parisienes])]).
+ventas(lucas, fecha(11, 8), [golosinas(600)]).
+ventas(lucas, fecha(18, 8), [bebidas(noAlcoholicas, 2), cigarrillos([derby])]).
+
+
+importante(golosinas(Monto)):-
+    Monto>100.
+importante(cigarrillos(Marcas)):-
+    length(Marcas, Long),
+    Long>2.
+importante(bebidas(alcoholicas, _)).
+importante(bebidas(_, Cuantas)):-
+    Cuantas>5.
+
+suertuda(Persona):-
+    ventas(Persona, _, _),
+    forall(ventas(Persona, _, Ventas), primeraVentaImportante(Ventas)).
+
+primeraVentaImportante(Ventas):-
+    nth0(0, Ventas, PrimeraVenta),
+    importante(PrimeraVenta).
 
 
 
