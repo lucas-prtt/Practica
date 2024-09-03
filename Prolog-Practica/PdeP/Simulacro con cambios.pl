@@ -147,12 +147,19 @@ tipoDeJuego(puzzle, puzzle(_,_)).
 
 
 
-buenosAmigos(UnAmigo, OtroAmigo):-
+/* buenosAmigos(UnAmigo, OtroAmigo):-
     vaAComprar(UnAmigo, UnRegalo, esRegalo(OtroAmigo)),
-    vaAComprar(OtroAmigo, OtroRegalo, esRegalo(UnAmigo)),
     esPopular(UnRegalo),
-    esPopular(OtroRegalo).
+    vaAComprar(OtroAmigo, OtroRegalo, esRegalo(UnAmigo)),
+    esPopular(OtroRegalo). */
 
+buenosAmigos(UnAmigo, OtroAmigo):-
+    regalaJuegoPopular(UnAmigo, OtroAmigo),
+    regalaJuegoPopular(OtroAmigo, UnAmigo).
+
+regalaJuegoPopular(UnAmigo, OtroAmigo):-
+    vaAComprar(UnAmigo, UnRegalo, esRegalo(OtroAmigo)),
+    esPopular(UnRegalo).
 
 
 
