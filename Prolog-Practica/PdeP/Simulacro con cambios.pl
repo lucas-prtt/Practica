@@ -64,7 +64,27 @@ generoYDatos(Juego, Genero):-
 
 
 
-posee(xxManuelito85xx, csgo).
+
+
+
+
+usuario(xxManuelito85xx, [csgo, dota2], [propio(minecraft), regalo(elMisterioDeLaCasaEmbrujada, soyhackerxd)]).
+usuario(soyhackerxd, [csgo, callOfDutyWW2, minecraft], [regalo(acertijosMisteriosos, xxManuelito85xx), regalo(acertijosMisteriosos, regalenmeAlgoPorfisQueNoTengoPlata), regalo(elMisterioDeLaCasaEmbrujada, xxManuelito85xx), propio(falloutNewVegas)]).
+usuario(revendoJuegosPorMercadoLibre, [], [regalo(callOfDutyWW2, xxManuelito85xx), regalo(minecraft, xxManuelito85xxalt), regalo(acertijosMisteriosos, soyhackerxd), regalo(luisAlbertoGonzalez, minecraft)]).
+
+posee(Usuario, Juego):-
+    usuario(Usuario, Juegos, _),
+    member(Juego, Juegos).
+
+vaAComprar(Usuario, Compra, Regalo):-
+    usuario(Usuario, _, Adquisiciones),
+    member(Adquisicion, Adquisiciones),
+    loRegala(Adquisicion, Compra, Regalo).
+
+loRegala(propio(Juego), Juego, noEsRegalo).
+loRegala(regalo(Juego, Destinatario), Juego, esRegalo(Destinatario)).
+
+/* posee(xxManuelito85xx, csgo).
 posee(xxManuelito85xx, dota2).
 posee(soyhackerxd, csgo).
 posee(soyhackerxd, callOfDutyWW2).
@@ -83,7 +103,7 @@ vaAComprar(soyhackerxd, acertijosMisteriosos, esRegalo(xxManuelito85xx)).
 vaAComprar(soyhackerxd, acertijosMisteriosos, esRegalo(regalenmeAlgoPorfisQueNoTengoPlata)).
 vaAComprar(soyhackerxd, falloutNewVegas, noEsRegalo).
 vaAComprar(soyhackerxd, elMisterioDeLaCasaEmbrujada, esRegalo(xxManuelito85xx)).
-vaAComprar(luisAlbertoGonzalez, falloutNewVegas, noEsRegalo).
+vaAComprar(luisAlbertoGonzalez, falloutNewVegas, noEsRegalo). */
 
 
 
