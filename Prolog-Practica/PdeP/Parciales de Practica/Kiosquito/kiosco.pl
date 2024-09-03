@@ -23,6 +23,17 @@ estaAtendiendo(Persona, Dia, Hora):-
     atiende(Persona, turno(Dia, Inicio, Fin)),
     between(Inicio, Fin, Hora).
 
+kiosquero(Persona):-
+    atiende(Persona, _).
+
+sola(Persona, Dia, Hora):-
+    estaAtendiendo(Persona, Dia, Hora),
+    kiosquero(OtraPersona),
+    Persona\=OtraPersona,
+    not(estaAtendiendo(OtraPersona, Dia, Hora)).
+
+
+
 
 
 
