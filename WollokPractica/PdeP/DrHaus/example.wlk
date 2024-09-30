@@ -1,9 +1,10 @@
-object pepita {
-  var energy = 100
+class persona{
+  var property celulas = 4000000
+}
 
-  method energy() = energy
+const malaria = new enfermedad(celulasInfectadas = 500)
 
-  method fly(minutes) {
-    energy = energy - minutes * 3
-  }
+class enfermedad{
+  var property celulasInfectadas
+  method agresiva(Persona) = Persona.celulas() > (celulasInfectadas/10)
 }
