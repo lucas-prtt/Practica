@@ -2,7 +2,7 @@ class Persona{
   var property celulas
   var property temperatura
   var coma = false
-  const enfermedades = []
+  const property enfermedades = []
 
   method vivir(){
     self.sufrir()
@@ -61,14 +61,14 @@ method estaEnComa() = coma
 
 class EnfermedadInfecciosa{
   var property celulasAmenazadas
-  method agresiva(persona) = persona.celulas() > (celulasAmenazadas/10)
+  method agresiva(persona) = (persona.celulas()/10) < celulasAmenazadas
   method atacar(persona){
     persona.aumentarTemperatura(celulasAmenazadas/1000)
   }
   method reproducir(){
     celulasAmenazadas = celulasAmenazadas * 2
   }
-}
+} 
 class EnfermedadAutoinmune{
   var property celulasAmenazadas
   var duracion = 0
@@ -87,6 +87,6 @@ const malaria = new EnfermedadInfecciosa(celulasAmenazadas = 500)
 const otitis = new EnfermedadInfecciosa(celulasAmenazadas = 100)
 const lupus = new EnfermedadAutoinmune(celulasAmenazadas = 100)
 const otraMalaria = new EnfermedadInfecciosa(celulasAmenazadas = 800)
-const logan = new Persona(celulas = 3000000, temperatura = 36)
+const logan = new Persona(celulas = 3000000, temperatura = 36, enfermedades = [malaria, lupus, otitis])
 const frank = new Persona(celulas = 3500000, temperatura = 36)
 
