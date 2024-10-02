@@ -1,0 +1,60 @@
+import Humanos.*
+import Enfermedades.*
+
+describe "Situacion 1"{
+const malaria = new EnfermedadInfecciosa(celulasAmenazadas = 500)
+const otitis = new EnfermedadInfecciosa(celulasAmenazadas = 100)
+const lupus = new EnfermedadAutoinmune(celulasAmenazadas = 100)
+const otraMalaria = new EnfermedadInfecciosa(celulasAmenazadas = 800)
+const logan = new Persona(celulas = 3000000, temperatura = 36)
+const frank = new Persona(celulas = 3500000, temperatura = 36)
+
+
+method initialize(){
+    frank.contraer(otraMalaria)
+    logan.contraer(malaria)
+    logan.contraer(lupus)
+    logan.contraer(otitis)
+}
+
+test "Frank estando sano contrae otra malaria"{
+    assert.that(otraMalaria === frank.enfermedades().first())
+}
+test "Logan empeora"{
+    logan.empeorar()
+    assert.equals(1000, logan.enfermedades().first().celulasAmenazadas())
+}
+
+test "Logan sufre un dia"{
+    logan.vivir()
+
+    assert.equals(0,
+    logan.enfermedades().
+    filter({enfermedad => enfermedad.agresiva(logan)}).
+    map({enfermedad => enfermedad.celulasAmenazadas()}).
+    sum())
+
+    assert.that(malaria === 
+    logan.enfermedades().
+    max({enfermedad => enfermedad.celulasAmenazadas()}))
+
+    assert.notThat(logan.estaEnComa())
+}
+
+test "Logan sufre un mes"{
+    31.times({a => logan.vivir()})
+
+    assert.equals(/*500 * 2 ** 31 + 100 * 2 ** 31 +*/ 100 ,
+    logan.enfermedades().
+    filter({enfermedad => enfermedad.agresiva(logan)}).
+    map({enfermedad => enfermedad.celulasAmenazadas()}).
+    sum())
+
+    assert.that(malaria === 
+    logan.enfermedades().
+    max({enfermedad => enfermedad.celulasAmenazadas()}))
+
+    assert.that(logan.estaEnComa())
+}
+
+}
