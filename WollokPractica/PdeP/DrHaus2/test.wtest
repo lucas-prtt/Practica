@@ -28,31 +28,19 @@ test "Logan empeora"{
 test "Logan sufre un dia"{
     logan.vivir()
 
-    assert.equals(0,
-    logan.enfermedades().
-    filter({enfermedad => enfermedad.agresiva(logan)}).
-    map({enfermedad => enfermedad.celulasAmenazadas()}).
-    sum())
+    assert.equals(0, logan.celulasAmenazadasPorEnfermedadesAgresivas())
 
-    assert.that(malaria === 
-    logan.enfermedades().
-    max({enfermedad => enfermedad.celulasAmenazadas()}))
+    assert.that(malaria === logan.enfermedadConMasCelulasAmenazadas())
 
     assert.notThat(logan.estaEnComa())
 }
 
 test "Logan sufre un mes"{
-    31.times({a => logan.vivir()})
+    logan.vivir(31)
 
-    assert.equals(/*500 * 2 ** 31 + 100 * 2 ** 31 +*/ 100 ,
-    logan.enfermedades().
-    filter({enfermedad => enfermedad.agresiva(logan)}).
-    map({enfermedad => enfermedad.celulasAmenazadas()}).
-    sum())
+    assert.equals(/*500 * 2 ** 31 + 100 * 2 ** 31 +*/ 100 , logan.celulasAmenazadasPorEnfermedadesAgresivas())
 
-    assert.that(malaria === 
-    logan.enfermedades().
-    max({enfermedad => enfermedad.celulasAmenazadas()}))
+    assert.that(malaria === logan.enfermedadConMasCelulasAmenazadas())
 
     assert.that(logan.estaEnComa())
 }
