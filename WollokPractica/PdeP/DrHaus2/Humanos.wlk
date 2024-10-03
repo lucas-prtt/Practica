@@ -4,7 +4,6 @@ class Persona {
   var property celulas
   var property temperatura
   const property enfermedades = []
-  
   method vivir() {
     self.sufrir() //self.empeorar()
   }

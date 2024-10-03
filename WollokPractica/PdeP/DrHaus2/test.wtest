@@ -1,20 +1,22 @@
 import Humanos.*
 import Enfermedades.*
 
-describe "Situacion 1"{
+describe "DrHause"{
 const malaria = new EnfermedadInfecciosa(celulasAmenazadas = 500)
 const otitis = new EnfermedadInfecciosa(celulasAmenazadas = 100)
 const lupus = new EnfermedadAutoinmune(celulasAmenazadas = 100)
 const otraMalaria = new EnfermedadInfecciosa(celulasAmenazadas = 800)
 const logan = new Persona(celulas = 3000000, temperatura = 36)
 const frank = new Persona(celulas = 3500000, temperatura = 36)
-
+const cameron = new Medico(celulas = 4700000, temperatura = 37, dosis = 25)
+const house = new JefeDeDepartamento(celulas = 7000000, temperatura = 35.7)
 
 method initialize(){
     frank.contraer(otraMalaria)
     logan.contraer(malaria)
     logan.contraer(lupus)
     logan.contraer(otitis)
+    house.contratar(cameron)
 }
 
 test "Frank estando sano contrae otra malaria"{
@@ -44,5 +46,22 @@ test "Logan sufre un mes"{
 
     assert.that(logan.estaEnComa())
 }
-
+test "Atenuar malaria y lupus"{
+    malaria.atenuar(100)
+    lupus.atenuar(500)
+    assert.equals(400, malaria.celulasAmenazadas())   
+    assert.equals(-400, lupus.celulasAmenazadas())
+    }
+test "Cameron atiende la malaria de Logan"{
+    cameron.atender(logan)
+    assert.equals(125, malaria.celulasAmenazadas())
+}
+test "Cameron atiende el lupus de Logan"{
+    cameron.atender(logan)
+    assert.equals(-275, lupus.celulasAmenazadas())
+}
+test "Cameron atiende la otitis de Logan"{
+    cameron.atender(logan)
+    assert.notThat(logan.enfermedades().contains(otitis))
+}
 }
