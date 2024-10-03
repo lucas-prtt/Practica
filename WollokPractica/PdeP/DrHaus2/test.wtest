@@ -10,7 +10,7 @@ const logan = new Persona(celulas = 3000000, temperatura = 36)
 const frank = new Persona(celulas = 3500000, temperatura = 36)
 const cameron = new Medico(celulas = 4700000, temperatura = 37, dosis = 25)
 const house = new JefeDeDepartamento(celulas = 7000000, temperatura = 35.7)
-
+const muerte = new LaMuerte()
 method initialize(){
     frank.contraer(otraMalaria)
     logan.contraer(malaria)
@@ -64,4 +64,23 @@ test "Cameron atiende la otitis de Logan"{
     cameron.atender(logan)
     assert.notThat(logan.enfermedades().contains(otitis))
 }
+test "House atiende a Cameron"{
+    cameron.contraer(malaria)
+    house.atender(cameron) //House le tiene que avisar a cameron que se automedique de nuevo para que se le vaya la malaria
+    assert.notThat(cameron.enfermedades().contains(malaria))
+}
+
+test "House y Cameron contraen malaria"{
+    house.contraer(malaria)
+    cameron.contraer(otraMalaria)
+    assert.that(house.enfermedades().contains(malaria))
+    assert.that(cameron.enfermedades().contains(otraMalaria))
+}
+
+test "House se murió"{
+    house.contraer(muerte)
+    house.vivir(3) //(Despues de 3 dias de morirse)
+    assert.equals(8.7, house.temperatura())
+}
+
 }

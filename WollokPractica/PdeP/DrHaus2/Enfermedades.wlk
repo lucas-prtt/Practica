@@ -27,11 +27,11 @@ class EnfermedadAutoinmune inherits Enfermedad{
 }
 
 class LaMuerte {
-  method agresiva() = true
+  method agresiva(_) = true
   method atacar(paciente){
-    paciente.aumentarTemperatura(-1)
+    paciente.aumentarTemperatura(-9)
   }
-  method atenuar(){}
+  method atenuar(_){}
   method celulasAmenazadas() = 0
   method curada() = false
 }
