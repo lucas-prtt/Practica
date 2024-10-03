@@ -48,4 +48,35 @@ class Persona {
 
   method enfermedadConMasCelulasAmenazadas() = self.enfermedades().max({enfermedad => enfermedad.celulasAmenazadas()})
 
+  method medicar(dosis) {
+    enfermedades.forEach({enfermedad => enfermedad.atenuar(15*dosis)})
+    enfermedades.removeAllSuchThat({enfermedad => enfermedad.curada()})
+  }
 }
+
+class Medico inherits Persona{
+    var dosis
+
+    method cambiarDosis(nuevaDosis){
+        dosis=nuevaDosis
+    }
+    method atender(paciente){
+        paciente.medicar(dosis)
+    }
+    override method contraer(enfermedad){
+        super(enfermedad)
+        self.atender(self)
+    }
+}
+
+class JefeDeDepartamento inherits Medico(dosis = 0){
+    const subordinados = #{}
+    method contratar(medico){
+        subordinados.add(medico)
+    }
+    override method atender(paciente){
+        subordinados.anyOne().atender(paciente)
+    }
+}
+
+

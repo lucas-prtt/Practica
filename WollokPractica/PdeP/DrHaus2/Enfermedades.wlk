@@ -1,5 +1,13 @@
-class EnfermedadInfecciosa{
+class Enfermedad{
   var property celulasAmenazadas
+  method atenuar(cantidadDeCelulas) {
+    celulasAmenazadas -= cantidadDeCelulas
+  }
+  method curada() = celulasAmenazadas<=0
+}
+
+
+class EnfermedadInfecciosa inherits Enfermedad{
   method agresiva(persona) = (persona.celulas()/10) < celulasAmenazadas
   method atacar(persona){
     persona.aumentarTemperatura(celulasAmenazadas/1000)
@@ -8,8 +16,7 @@ class EnfermedadInfecciosa{
     celulasAmenazadas = celulasAmenazadas * 2
   }
 } 
-class EnfermedadAutoinmune{
-  var property celulasAmenazadas
+class EnfermedadAutoinmune inherits Enfermedad{
   var duracion = 0
   method agresiva(persona) = duracion > 30
   method atacar(persona){
@@ -17,4 +24,14 @@ class EnfermedadAutoinmune{
     duracion = duracion + 1
   }
   method reproducir(){}
+}
+
+class LaMuerte {
+  method agresiva() = true
+  method atacar(paciente){
+    paciente.aumentarTemperatura(-1)
+  }
+  method atenuar(){}
+  method celulasAmenazadas() = 0
+  method curada() = false
 }
