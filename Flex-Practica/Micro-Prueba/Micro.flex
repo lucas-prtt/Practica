@@ -1,3 +1,22 @@
+%{
+    #define ABREPARENTESIS "ABREPARENTESIS"
+    #define CIERRAPARENTESIS "CIERRAPARENTESIS"
+    #define LEER "LEER"
+    #define ESCRIBIR "ESCRIBIR"
+    #define INICIO "INICIO"
+    #define FIN "FIN"
+    #define PUNTOYCOMA "PUNTOYCOMA"
+    #define OPERADORASIGNACION "OPERADORASIGNACION"
+    #define TIPO "TIPO"
+    #define IDENTIFICADOR "IDENTIFICADOR"
+    #define CTELITERAL "CTELITERAL"
+%}
+
+
+
+
+
+
 IDENTIFICADOR ({LETRA}|_)({LETRA}|{DIGITO}|_)*
 LETRA [a-zA-Z]
 DIGITO [0-9]
@@ -18,17 +37,18 @@ CIERRAPARENTESIS \)
 %option noyywrap
 
 %%
-{ABREPARENTESIS} printf("-ABREPARENTESIS-");
-{CIERRAPARENTESIS} printf("-CIERRAPARENTESIS-");
-{LEER} printf("-LEER-");
-{ESCRIBIR} printf("-ESCRIBIR-");
-{INICIO} printf("-INICIO-");
-{FIN} printf("-FIN-");
-{PUNTOYCOMA} printf("-PUNTOYCOMA-");
-{OPERADORASIGNACION} printf("-OPERADORASIGNACION-");
-{TIPO} printf("-TIPO(%s)-", yytext);
-{IDENTIFICADOR} printf("-IDENTIFICADOR(%s)-", yytext);
-{CONSTANTELITERAL} printf("-CTELITERAL(%s)-",yytext);
+{ABREPARENTESIS}           { return (ABREPARENTESIS); }
+{CIERRAPARENTESIS}         { return (CIERRAPARENTESIS); }
+{LEER}                     { return (LEER); }
+{ESCRIBIR}                 { return (ESCRIBIR); }
+{INICIO}                   { return (INICIO); }
+{FIN}                      { return (FIN); }
+{PUNTOYCOMA}               { return (PUNTOYCOMA); }
+{OPERADORASIGNACION}       { return (OPERADORASIGNACION); }
+{TIPO}                     { sscanf(yytext, "%s", yylval.contenido); return (TIPO); }
+{IDENTIFICADOR}            { sscanf(yytext, "%s", yylval.contenido); return (IDENTIFICADOR); }
+{CONSTANTELITERAL}         { sscanf(yytext, "%s", yylval.contenido); return (CTELITERAL); }
+.                          { printf("ERROR LEXICO en %s", yylval);}
 
 %%
 
