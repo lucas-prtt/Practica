@@ -7,7 +7,7 @@ class Paquete{
 }
 class PaqueteSaldo inherits Paquete{
     var saldo
-    method puedeSatifacer(consumo) = saldo >= consumo.costo()
+    method puedeSatisfacer(consumo) = saldo >= consumo.costo()
     method satisfacer(consumo){
         saldo -= consumo.costo()
     }
@@ -15,7 +15,7 @@ class PaqueteSaldo inherits Paquete{
 
 class PaqueteMegasLibres inherits Paquete{
     var megas
-    method puedeSatifacer(consumo) = consumo.menosMegabytesQue(megas)
+    method puedeSatisfacer(consumo) = consumo.menosMegabytesQue(megas)
     method satisfacer(consumo) {
         megas -= consumo.megabytes()
     }
@@ -29,6 +29,10 @@ class InternetGratisDurante inherits Paquete{
     const dias = []
     method puedeSatisfacer(consumo) = consumo.esInternet() and consumo.diaDeSemanaEntre(dias)
     method satisfacer(){}
+}
+
+class PaqueteMegasLibresPlusPlus inherits PaqueteMegasLibres{
+    override method puedeSatisfacer(consumo) = super(consumo) or consumo.menosMegabytesQue(0.1)
 }
 
 
