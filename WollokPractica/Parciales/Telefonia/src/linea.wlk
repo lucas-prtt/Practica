@@ -1,8 +1,15 @@
 import consumos.*
+import calidad.*
 
 class Linea {
+  var calidad = estandar
+  var deuda = 0
   const consumos = []
-  const paquetes = []
+  var paquetes = []
+  
+  method adeudar(dinero) {
+    deuda += dinero
+  }
   
   method agregarPaquete(paquete) {
     paquetes.add(paquete)
@@ -31,17 +38,20 @@ class Linea {
     new Date().minusDays(30),
     new Date()
   )
-
-  method puedeRealizarConsumo(consumo) = paquetes.any{paquete => paquete.puedeSatsifacer(consumo)}
-
-    method realizarConsumo(consumo){
-        if (!self.puedeRealizarConsumo(consumo)){
-            throw new Exception(message = "No puede realizar este consumo. Ningun paquete se lo permite")
-        }
-        consumos.add(consumo)
-        paquetes.reverse().find{paquete => paquete.puedeSatisfacerConsumo(consumo)}.satisfacer(consumo)
-    }
-
+  
+  method puedeRealizarConsumo(consumo) = paquetes.any(
+    { paquete => paquete.puedeSatsifacer(consumo) }
+  )
+  
+  method realizarConsumo(consumo) {
+    if (!self.puedeRealizarConsumo(consumo)) calidad.adeudar(self, consumo)
+    else paquetes.reverse().find(
+        { paquete => paquete.puedeSatisfacerConsumo(consumo) }
+      ).satisfacer(consumo)
+    consumos.add(consumo)
+  }
+  
+  method limpiezaDePaquetes() {
+    paquetes = paquetes.filter({ paquete => paquete.valido() })
+  }
 }
-
-const unaLinea = new Linea()
