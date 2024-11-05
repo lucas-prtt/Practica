@@ -1,5 +1,5 @@
 class Consumo {
-  const fechaDeConsumo
+  const fechaDeConsumo = new Date()
 method diaDeSemana() = fechaDeConsumo.dayOfweek()
   method diaDeSemanaEntre(dias) = dias.any{dia => dia == self.diaDeSemana()}
   method fechaEntre(inicio, fin) = fechaDeConsumo.between(inicio, fin)

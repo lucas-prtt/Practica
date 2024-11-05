@@ -7,6 +7,12 @@ class Linea {
   const consumos = []
   var paquetes = []
   
+  method deuda() = deuda
+  
+  method calidad(nuevaCalidad){
+    calidad = nuevaCalidad
+  }
+
   method adeudar(dinero) {
     deuda += dinero
   }
@@ -40,13 +46,13 @@ class Linea {
   )
   
   method puedeRealizarConsumo(consumo) = paquetes.any(
-    { paquete => paquete.puedeSatsifacer(consumo) }
+    { paquete => paquete.puedeSatisfacer(consumo) }
   )
   
   method realizarConsumo(consumo) {
     if (!self.puedeRealizarConsumo(consumo)) calidad.adeudar(self, consumo)
     else paquetes.reverse().find(
-        { paquete => paquete.puedeSatisfacerConsumo(consumo) }
+        { paquete => paquete.puedeSatisfacer(consumo) }
       ).satisfacer(consumo)
     consumos.add(consumo)
   }

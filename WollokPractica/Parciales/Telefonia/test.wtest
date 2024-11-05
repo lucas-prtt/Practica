@@ -1,0 +1,28 @@
+import src.linea.*
+import src.paquetes.*
+import src.consumos.*
+import src.calidad.*
+describe "Tests telefonia"{
+    const unaLinea = new Linea()
+    const unPaquete = new PaqueteSaldo(saldo = 100)
+    const unConsumo = new ConsumoDeInternet(megabytes = 60)
+    const otroConsumo = new ConsumoDeLlamada(segundos = 3600)
+
+    method initialize(){
+        unaLinea.agregarPaquete(unPaquete)
+    }
+    test "Efecto"{
+        unaLinea.realizarConsumo(unConsumo)
+        assert.equals(6,unaLinea.costoTotal30Dias())
+    }
+    test "Excepcion"{
+        assert.throwsException{unaLinea.realizarConsumo(otroConsumo)}
+    }
+    test "Devolucion"{
+        unaLinea.calidad(black)
+        unaLinea.realizarConsumo(otroConsumo)
+        unaLinea.realizarConsumo(unConsumo)
+        assert.equals(179.5, unaLinea.deuda())
+        assert.equals(92.75, unaLinea.costoPromedioEntre(new Date().minusDays(1), new Date().plusDays(1)))
+    }
+}
