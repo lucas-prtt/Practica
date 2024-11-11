@@ -5,7 +5,8 @@ class Persona {
   const carrerasCompletadas = []
   var hijos = 0
   const sueldoBuscado
-  
+  var personalidad
+
   method cumplirSuenio(suenio) {
     if (!self.puedeCumplir(suenio)) {
       throw new Exception(message = "No se puede cumplir el sueño")
@@ -41,7 +42,23 @@ class Persona {
   
   method aceptaSueldo(unSueldo) = unSueldo >= sueldoBuscado
   
-    method sueniosCumplidos() = sueniosCumplidos
-    method sueniosPendientes() = sueniosPendientes
+  method sueniosCumplidos() = sueniosCumplidos
+  
+  method sueniosPendientes() = sueniosPendientes
+
+method cumplirUnSuenio() {
+    self.cumplirSuenio(personalidad.eleccion(self))
+}
+
+method fluctuarPersonalidad(){
+    personalidad = personalidad.siguientePersonalidad()
+}
+
+method nivelDeFelicidad() = sueniosCumplidos.sum{suenio => suenio.felicidonios()}
+method nivelDeAmbicion() = sueniosPendientes.sum{suenio => suenio.felicidonios()}
+method esFeliz() = self.nivelDeFelicidad() > self.nivelDeAmbicion()
+method cantidadDeSueniosTotales() = sueniosCumplidos.size() + sueniosPendientes.size()
+method cantidadFelicidoniosTotales() = self.nivelDeFelicidad() + self.nivelDeAmbicion()
+method esAmbicioso() = (self.cantidadDeSueniosTotales() > 3) and (self.cantidadFelicidoniosTotales() > 100)
 
 }

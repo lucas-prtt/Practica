@@ -29,6 +29,11 @@ class ConseguirTrabajo inherits  Suenio{
     method cumplirSuenio(){}
 }
 
-
+class SuenioMultiple inherits Suenio{
+    const suenios
+    method puedeCumplir(persona)  = suenios.all{unSuenio => unSuenio.puedeCumplir(persona)}
+    method cumplir(persona) {suenios.forEach{unSuenio => unSuenio.cumplir()}
+    }
+}
 
 
