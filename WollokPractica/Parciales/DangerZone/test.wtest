@@ -1,0 +1,33 @@
+import src.Agente.*
+import src.Equipo.*
+import src.Mision.*
+import src.PuestosLaborales.*
+
+
+describe "test" {
+    const nadarEnEscocia = new Mision(dificultad = 15, habilidadesRequeridas = #{"Nadar", "Hablar ingles"})
+    const pepe = new Agente(salud = 50, habilidades = #{"Hablar ingles", "Jugar minecraft competitivo", "Jugar ajedrez"}, tipo = new Oficinista())
+    const juan = new Agente(salud = 300, habilidades = #{"Nadar", "Volar", "Correr", "Escalar"}, tipo = espia)
+    const juanYPepe = new Equipo(integrantes = #{juan, pepe})
+    const patricio = new Jefe(salud = 70, habilidades = #{"Tocar la guitarra"}, tipo = espia, subordinados = #{pepe, juan})
+    const jugarAjedrezSubacuatico = new Mision(dificultad = 45, habilidadesRequeridas = #{"Nadar", "Jugar ajedrez"})
+    const escalarLaTorreEiffelPorFuera = new Mision(dificultad = 20, habilidadesRequeridas = #{"Escalar"})
+
+    test "un equipo completa una mision"{
+        juanYPepe.completarMision(nadarEnEscocia)
+        assert.equals(45, pepe.salud())
+        assert.equals(1, pepe.estrellas())
+        assert.that(juan.puedeUsarHabilidad("Hablar ingles"))
+    }
+    test "un jefe completa una mision"{
+        patricio.completarMisionSolo(jugarAjedrezSubacuatico)
+        assert.that(patricio.puedeUsarHabilidad("Nadar"))
+        assert.equals(25, patricio.salud())
+    }
+    test "pepe no puede escalar"{
+        assert.throwsExceptionWithMessage("No pudo completar mision", {pepe.completarMisionSolo(escalarLaTorreEiffelPorFuera)})
+    }
+
+
+
+}

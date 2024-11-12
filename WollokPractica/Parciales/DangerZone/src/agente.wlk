@@ -1,15 +1,16 @@
 import PuestosLaborales.*
 class Agente{
     const habilidades
-    var tipo = oficinista
+    var tipo
     var salud
-    var estrellas = 0
     method incapacitado() = salud < self.saludCritica()
     method saludCritica() = tipo.saludCritica()
-    method ganarEstrella(){estrellas += 1}
+    method ganarEstrella(){tipo.ganarEstrella()}
+    method salud() = salud
+    method estrellas() = tipo.estrellas()
     method transformarEnEspia() {
         if(tipo.esEspia()){throw new Exception(message = "Ya es espia")}
-        else if(estrellas < 3){throw new Exception(message = "No puede ser espia aun")}
+        else if(tipo.masDe3Estrellas()){throw new Exception(message = "No puede ser espia aun")}
         else{tipo = espia}
     }
     method estaVivo() = salud > 0
@@ -32,6 +33,7 @@ class Agente{
     method aprenderHabilidadesDeMision(mision) {
         mision.enseniarHabilidades(self)
     }
+    
 }
 
 class Jefe inherits Agente{
