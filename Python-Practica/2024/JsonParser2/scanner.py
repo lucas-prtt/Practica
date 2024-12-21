@@ -5,30 +5,31 @@ class Token:
     def __repr__(self):
         return "<Objeto Token: Tipo: {}, Valor: {}>".format(self.type, self.val)
 
+def scanNumber(string):
+    index = 0
+    while index < len(string) and string[index] in "0123456789.-":
+        index += 1
+    value = float(string[0:index])
+    return value, index
+
+def scanString(string):
+    index = 0
+    index += 1 # Skip de <"> 
+    # No toma caracter de escape
+    while (index < len(string) and string[index] != '"'):
+        index +=1
+    index += 1 # Skip de <"> 
+    return string[1:index-1], index
 
 def scan(string):
-    index = 0
+    token, index = proximoToken(string)
+    return token, string[index:]
+
+def proximoToken(string):
     token = None
-    def scanNumber(string, index):
-        start = index
-        while index < len(string) and string[index] in "0123456789.-":
-            index += 1
-        value = float(string[start:index])
-        return value, index-start
-
-    def scanString(string, index):
-        start = index
-        index += 1 # Skip de <"> 
-        # No toma caracter de escape
-        while (index < len(string) and string[index] != '"'):
-            index +=1
-        index += 1 # Skip de <"> 
-        return string[start+1:index-1], index-start
-        
-
-    while string[index] == " ":
-        index += 1
-
+    index = 0
+    while string[0] == " ":
+        string = string[1:]
     match(string[index]):
         case "{":
             index+=1
@@ -59,4 +60,4 @@ def scan(string):
                 token = Token("Number", value)
             else:
                 raise Exception("Error de scanner en indice del string: {} \n".format(index))
-    return token, string[index:]
+    return token, index
