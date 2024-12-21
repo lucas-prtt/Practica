@@ -25,6 +25,9 @@ def scan(string):
     token, index = proximoToken(string)
     return token, string[index:]
 
+def nextToken(string):
+    return proximoToken(string)[0]
+
 def proximoToken(string):
     token = None
     index = 0
