@@ -35,20 +35,29 @@ class JsonObject:
     def element(self):
         def next() : return nextToken(self.jsonString)
         def skip() : self.skip()
+        def delFirstSpaces(string) : 
+            while string[0] == " ":
+                string = string[1:]
+            return string
         val = None
         if next().type in ["String", "Number"]:
             val = next().val
             skip()
         elif next().type == "{":
-            val = JsonObject(self.jsonString)
+            self.jsonString = delFirstSpaces(self.jsonString)
+            newJsonObjectString = self.jsonString
+            index = 1
             opened = 1
             closed = 0
             while(opened > closed):
-                if next().type == "{":
+                if newJsonObjectString[index] == "{":
                     opened += 1
-                elif next().type == "}":
+                elif newJsonObjectString[index] == "}":
                     closed += 1
-                skip()
+                index +=1
+            self.jsonString = self.jsonString[index:]
+            newJsonObjectString = newJsonObjectString[0:index]
+            val = JsonObject(newJsonObjectString)
             pass
         elif next().type == "[":
             val = self.elementList()
@@ -79,10 +88,12 @@ class JsonObject:
             self.attList()
 
         match("}")
+        if self.jsonString != "":
+            raise Exception("Basura al final")
 
 
 
 
 
-a = JsonObject('{"Hola" : 2}')
+a = JsonObject('{"Hola" : 2, "chau" : "chau", "perro" : {"nombre" : "Horacio"} }')
 print(a)
