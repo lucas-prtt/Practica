@@ -33,7 +33,8 @@ def proximoToken(string):
     index = 0
     while string[0] == " ":
         string = string[1:]
-    match(string[index]):
+        index += 1
+    match(string[0]):
         case "{":
             index+=1
             token = Token("{", None)
@@ -44,7 +45,7 @@ def proximoToken(string):
             index+=1
             token = Token(":", None)
         case '"':
-            value, long = scanString(string, index)
+            value, long = scanString(string)
             index += long
             token = Token("String", value)
         case '[':
@@ -57,8 +58,8 @@ def proximoToken(string):
             index+=1
             token = Token(",", None)
         case _:
-            if string[index] in "0123456789.-":
-                value, long = scanNumber(string, index)
+            if string[0] in "0123456789.-":
+                value, long = scanNumber(string)
                 index += long
                 token = Token("Number", value)
             else:
