@@ -15,7 +15,7 @@ class JsonObject:
          
         tok, self.jsonString = scan(self.jsonString)
         if tok.type != type:
-            raise Exception("Match error: Expected:<{}>, Actual:<{}>".format(type, tok.type()))
+            raise Exception("Match error: Expected:<{}>, Actual:<{}>".format(type, tok.type))
     def skip(self):
          
         self.match(nextToken(self.jsonString).type)
@@ -60,7 +60,9 @@ class JsonObject:
             val = JsonObject(newJsonObjectString)
             pass
         elif next().type == "[":
+            skip()
             val = self.elementList()
+            self.match("]")
             pass
         else:
             raise Exception("Unvalid argument <{}>".format(next().type))
@@ -72,7 +74,7 @@ class JsonObject:
         def newElement() : lista.append(self.element())
 
         lista.append(self.element())
-        while(nextToken(self.jsonString) == ","):
+        while(nextToken(self.jsonString).type == ","):
             self.match(",")
             lista.append(self.element())
         return lista
@@ -95,5 +97,6 @@ class JsonObject:
 
 
 
-a = JsonObject('{"Hola" : 2, "chau" : "chau", "perro" : {"nombre" : "Horacio"} }')
+
+a = JsonObject('{"Hola" : 2, "chau" : "chau", "perro" : {"nombre" : "Horacio"}, "canicas" : [1, 2, 3, 4, 5] }')
 print(a)
