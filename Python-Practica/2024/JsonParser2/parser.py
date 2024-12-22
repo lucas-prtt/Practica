@@ -4,8 +4,8 @@ from scanner import scan, nextToken
 
 class JsonObject:
     jsonString = None
-    def __repr__(self):
-        return "Parsed object: {}".format(str(self.__dict__))
+    #def __repr__(self):
+    #    return str(self.__dict__)
 
     def __init__(self, jsonString):
         self.jsonString = jsonString
@@ -92,11 +92,6 @@ class JsonObject:
         match("}")
         if self.jsonString != "":
             raise Exception("Basura al final")
+        
+        delattr(self, "jsonString")
 
-
-
-
-
-
-a = JsonObject('{"Hola" : 2, "chau" : "chau", "perro" : {"nombre" : "Horacio"}, "canicas" : [1, 2, 3, 4, 5] }')
-print(a)
