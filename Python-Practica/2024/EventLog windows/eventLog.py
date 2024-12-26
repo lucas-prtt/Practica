@@ -1,4 +1,4 @@
-import win32evtlog as wlog
+import win32evtlog as wlog # type: ignore
 import datetime
 POWERONID = 30
 SHUTDOWNID = 50104
