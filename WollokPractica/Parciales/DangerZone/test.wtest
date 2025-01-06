@@ -1,4 +1,4 @@
-import src.Agente.*
+import src.agente.*
 import src.Equipo.*
 import src.Mision.*
 import src.PuestosLaborales.*
