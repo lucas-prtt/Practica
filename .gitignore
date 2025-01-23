@@ -1,0 +1,6 @@
+/log/*
+#.gitignore
+**/*.exe
+**/build/
+**/output/
+**/.vscode/
