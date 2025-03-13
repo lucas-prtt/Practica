@@ -1,0 +1,21 @@
+C:\Users\Lucas\Git\Practica\C#-Practica\UI\Primera prueba-WPF\bin\Debug\net9.0-windows\Primera prueba-WPF.exe
+C:\Users\Lucas\Git\Practica\C#-Practica\UI\Primera prueba-WPF\bin\Debug\net9.0-windows\Primera prueba-WPF.deps.json
+C:\Users\Lucas\Git\Practica\C#-Practica\UI\Primera prueba-WPF\bin\Debug\net9.0-windows\Primera prueba-WPF.runtimeconfig.json
+C:\Users\Lucas\Git\Practica\C#-Practica\UI\Primera prueba-WPF\bin\Debug\net9.0-windows\Primera prueba-WPF.dll
+C:\Users\Lucas\Git\Practica\C#-Practica\UI\Primera prueba-WPF\bin\Debug\net9.0-windows\Primera prueba-WPF.pdb
+C:\Users\Lucas\Git\Practica\C#-Practica\UI\Primera prueba-WPF\obj\Debug\net9.0-windows\MainWindow.g.cs
+C:\Users\Lucas\Git\Practica\C#-Practica\UI\Primera prueba-WPF\obj\Debug\net9.0-windows\App.g.cs
+C:\Users\Lucas\Git\Practica\C#-Practica\UI\Primera prueba-WPF\obj\Debug\net9.0-windows\Primera prueba-WPF_MarkupCompile.cache
+C:\Users\Lucas\Git\Practica\C#-Practica\UI\Primera prueba-WPF\obj\Debug\net9.0-windows\Primera prueba-WPF_MarkupCompile.lref
+C:\Users\Lucas\Git\Practica\C#-Practica\UI\Primera prueba-WPF\obj\Debug\net9.0-windows\MainWindow.baml
+C:\Users\Lucas\Git\Practica\C#-Practica\UI\Primera prueba-WPF\obj\Debug\net9.0-windows\Primera prueba-WPF.g.resources
+C:\Users\Lucas\Git\Practica\C#-Practica\UI\Primera prueba-WPF\obj\Debug\net9.0-windows\Primera prueba-WPF.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Lucas\Git\Practica\C#-Practica\UI\Primera prueba-WPF\obj\Debug\net9.0-windows\Primera prueba-WPF.AssemblyInfoInputs.cache
+C:\Users\Lucas\Git\Practica\C#-Practica\UI\Primera prueba-WPF\obj\Debug\net9.0-windows\Primera prueba-WPF.AssemblyInfo.cs
+C:\Users\Lucas\Git\Practica\C#-Practica\UI\Primera prueba-WPF\obj\Debug\net9.0-windows\Primera prueba-WPF.csproj.CoreCompileInputs.cache
+C:\Users\Lucas\Git\Practica\C#-Practica\UI\Primera prueba-WPF\obj\Debug\net9.0-windows\Primera prueba-WPF.sourcelink.json
+C:\Users\Lucas\Git\Practica\C#-Practica\UI\Primera prueba-WPF\obj\Debug\net9.0-windows\Primera prueba-WPF.dll
+C:\Users\Lucas\Git\Practica\C#-Practica\UI\Primera prueba-WPF\obj\Debug\net9.0-windows\refint\Primera prueba-WPF.dll
+C:\Users\Lucas\Git\Practica\C#-Practica\UI\Primera prueba-WPF\obj\Debug\net9.0-windows\Primera prueba-WPF.pdb
+C:\Users\Lucas\Git\Practica\C#-Practica\UI\Primera prueba-WPF\obj\Debug\net9.0-windows\Primera prueba-WPF.genruntimeconfig.cache
+C:\Users\Lucas\Git\Practica\C#-Practica\UI\Primera prueba-WPF\obj\Debug\net9.0-windows\ref\Primera prueba-WPF.dll

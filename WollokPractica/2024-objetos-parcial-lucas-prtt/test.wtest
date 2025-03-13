@@ -1,0 +1,56 @@
+import src.Panelista.*
+import src.Tematica.*
+import src.TipoPanelista.*
+import src.Emision.*
+describe "tests"{
+    const pepe = new Panelista(tipoPanelista = viejo)
+    const catalina = new Panelista(tipoPanelista = new Colorado())
+    const manuel = new Panelista(tipoPanelista = deportivo)
+    const pancho = new Panelista(tipoPanelista = celebridad)
+    const tematicaCorrecaminos = new TematicaFilosofica(titulo = "Porque el coyote no alcanza el correcaminos?")
+    const tematicaFutbol = new TematicaDeportiva(titulo = "Messi juega al futbol")
+    const tematicaFutbolCorrecaminos = new TematicaMixta(titulo = "Messi se pasa al equipo <Los correcaminos>", subtematicas = [tematicaCorrecaminos, tematicaFutbol])
+    const tematicaFarandula = new TematicaFarandula(titulo = "Mira lo que paso!!", involucrados = [pepe, pancho, manuel, catalina])
+    const unaEmision = new Emision(tematicas = [tematicaCorrecaminos, tematicaFutbol, tematicaFutbolCorrecaminos, tematicaFarandula], panelistas = [pepe, manuel, pancho])
+
+    test"Pepe da un remate"{
+        pepe.darRemateGracioso(tematicaCorrecaminos)
+        assert.equals(7, pepe.estrellas())
+    }
+
+    test "Pepe opina de futbol"{
+        pepe.opinarTematica(tematicaFutbol)
+        assert.equals(1, pepe.estrellas())
+    }
+    test "Manuel opina de futbol"{
+        manuel.opinarTematica(tematicaFutbol)
+        assert.equals(5, manuel.estrellas())
+    }
+
+    test "Manuel opina de tematica mixta"{
+        manuel.opinarTematica(tematicaFutbolCorrecaminos)
+        assert.equals(6, manuel.estrellas())
+    }
+
+    test "Pancho opina de farandula"{
+        pancho.opinarTematica(tematicaFarandula)
+        assert.equals(4, pancho.estrellas())
+    }
+    test "Catalina no da gracia"{
+        catalina.darRemateGracioso(tematicaFarandula)
+        assert.equals(0, catalina.estrellas())
+    }
+    test "Catalina da gracia"{
+        20.times{_=>catalina.darRemateGracioso(tematicaFarandula)}
+        assert.equals(38, catalina.estrellas())
+    }
+
+    test "Se emite una emision y pepe es la estrella"{
+        unaEmision.emitir()
+        assert.equals(pepe, unaEmision.panelistaEstrella())
+    }
+
+}
+
+
+
