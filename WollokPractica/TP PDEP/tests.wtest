@@ -1,0 +1,291 @@
+import src.exceptions.*
+import src.grupo.*
+import src.zonas.*
+import src.guerreros.*
+import src.armas.*
+import src.caminos.*
+import src.efectos.*
+import src.objetos.*
+
+describe "Todos los Gandalfs" {
+  const baculoDeGandalf = new Baculo(poder = 400)
+  
+  test "Gandalf a full" {
+    const glamdring = new Espada(origen = elfico, multiplicador = 10)
+    const gandalf = new Maiar(vida = 100)
+    gandalf.agarrarArma(baculoDeGandalf)
+    gandalf.agarrarArma(glamdring)
+    assert.equals(2800, gandalf.poder())
+  }
+  
+  test "Gandalf sin armas y 80 de vida" {
+    const gandalf = new Maiar(vida = 80)
+    assert.equals(1200, gandalf.poder())
+  }
+  
+  test "Gandalf medio muerto" {
+    const gandalf = new Maiar(vida = 5)
+    gandalf.agarrarArma(baculoDeGandalf)
+    assert.equals(2300, gandalf.poder())
+  }
+  
+  test "Gandalf con su baculo y la espada del enano" {
+    const glamdring = new Espada(origen = enano, multiplicador = 10)
+    const gandalf = new Maiar(vida = 30)
+    gandalf.agarrarArma(baculoDeGandalf)
+    gandalf.agarrarArma(glamdring)
+    assert.equals(1650, gandalf.poder())
+  }
+}
+
+describe "Gandalf viajero" {
+  const baculoDeGandalf = new Baculo(poder = 400)
+  const glamdring = new Espada(origen = elfico, multiplicador = 10)
+  const caminoDeGondor = new Camino(ubicaciones = [lebennin, minasTirith])
+  
+  test "Gandalf a full puede atravesar Lebennin" {
+    const gandalf = new Maiar(vida = 100)
+    gandalf.agarrarArma(baculoDeGandalf)
+    gandalf.agarrarArma(glamdring)
+    assert.that(gandalf.puedeRecorrerZona(lebennin))
+  }
+  
+  test "Gandalf con 11 de vida y sin armas no puede atravesar Lebennin" {
+    const gandalf = new Maiar(vida = 11)
+    assert.notThat(gandalf.puedeRecorrerZona(lebennin))
+  }
+  
+  test "Gandalf con 11 de vida y sin armas no puede atravesar las Minas Tirith" {
+    const gandalf = new Maiar(vida = 11)
+    assert.notThat(gandalf.puedeRecorrerZona(minasTirith))
+  }
+  
+  test "Gandalf a full puede atravesar Lebennin y las Minas Tirith" {
+    const gandalf = new Maiar(vida = 100)
+    gandalf.agarrarArma(baculoDeGandalf)
+    gandalf.agarrarArma(glamdring)
+    assert.that(gandalf.puedeRecorrerCamino(caminoDeGondor))
+  }
+  
+  test "Gandalf a full atraviesa Lebennin y las Minas Tirith" {
+    const gandalf = new Maiar(vida = 100)
+    gandalf.agarrarArma(baculoDeGandalf)
+    gandalf.agarrarArma(glamdring)
+    gandalf.recorrerCamino(caminoDeGondor)
+    assert.equals(90, gandalf.vida())
+  }
+}
+
+describe "Tom Bombadil da un paseo" {
+  const caminoDeGondor = [lebennin, minasTirith]
+  const tomBombadil = new TomBombadil(vida = 100)
+    
+test "Tom Bombadil atraviesa el camino de Gondor y no pasa nada" {
+    tomBombadil.recorrerCamino(caminoDeGondor)
+    assert.equals(100, tomBombadil.vida())
+  }
+
+}
+
+describe "Varias armas y su poder" {
+  test "Espada enana multiplicador 15" {
+    const unaEspada = new Espada(multiplicador = 15, origen = enano)
+    assert.equals(300, unaEspada.poder())
+  }
+  
+  test "Daga enana multiplicado 15" {
+    const unaDaga = new Daga(multiplicador = 15, origen = enano)
+    assert.equals(150, unaDaga.poder())
+  }
+  
+  test "Hacha 5kg y 50cm" {
+    const unHacha = new Hacha(largoMango = 50, pesoHoja = 5)
+    assert.equals(250, unHacha.poder())
+  }
+  
+  test "Arco default de 110 cm" {
+    const unArco = new Arco(longitud = 110)
+    assert.equals(440, unArco.poder())
+  }
+  
+  test "Arco con tension de 35kg y 110 cm de longitud" {
+    const unArco = new Arco(longitud = 110)
+    unArco.tension(35)
+    assert.equals(385, unArco.poder())
+  }
+}
+
+describe "Guerreros de distintos tipos y sus poderes" {
+  test "Hobbit Frodo" {
+    const espada = new Espada(origen = elfico, multiplicador = 8)
+    const frodo = new Hobbit(vida = 50)
+    frodo.agarrarArma(espada)
+    assert.equals(250, frodo.poder())
+  }
+  
+  test "Enano Gimil" {
+    const hachaIzquierda = new Hacha(largoMango = 70, pesoHoja = 5)
+    const hachaDerecha = new Hacha(largoMango = 70, pesoHoja = 5)
+    // Se podria que tengan dos veces el mismo hacha
+    const gimil = new Enano(vida = 75, factorDePoder = 3)
+    gimil.agarrarArma(hachaDerecha)
+    gimil.agarrarArma(hachaIzquierda)
+    assert.equals(2175, gimil.poder())
+  }
+  
+  test "Elfo Legolas" {
+    const arco = new Arco(longitud = 110)
+    const espada = new Espada(origen = elfico, multiplicador = 12)
+    const legolas = new Elfo(vida = 80, destreza = 1)
+    legolas.agarrarArma(arco)
+    legolas.agarrarArma(espada)
+    assert.equals(2300, legolas.poder())
+  }
+  
+  test "Humano Aragorn" {
+    const aragorn = new Humano(vida = 85, limitadorDePoder = 20)
+    const anduril = new Espada(origen = elfico, multiplicador = 18)
+    const unaDaga = new Daga(origen = enano, multiplicador = 10)
+    aragorn.agarrarArma(anduril)
+    aragorn.agarrarArma(unaDaga)
+    assert.equals(2337.5, aragorn.poder())
+  }
+  
+  test "Maiar Gandalf" {
+    const gandalf = new Maiar(vida = 100)
+    const baculoDeGandalf = new Baculo(poder = 400)
+    const glamdring = new Espada(origen = elfico, multiplicador = 10)
+    gandalf.agarrarArma(baculoDeGandalf)
+    gandalf.agarrarArma(glamdring)
+    assert.equals(2800, gandalf.poder())
+  }
+  
+  test "Maiar Gandalf medio muerto" {
+    const gandalf = new Maiar(vida = 9)
+    const baculoDeGandalf = new Baculo(poder = 400)
+    const glamdring = new Espada(origen = elfico, multiplicador = 10)
+    gandalf.agarrarArma(baculoDeGandalf)
+    gandalf.agarrarArma(glamdring)
+    assert.equals(4000, gandalf.poder())
+  }
+  
+  test "Elfo Legolas concentrado" {
+    const arco = new Arco(longitud = 110)
+    const espada = new Espada(origen = elfico, multiplicador = 12)
+    const legolas = new Elfo(vida = 80, destreza = 1.5)
+    legolas.agarrarArma(arco)
+    legolas.agarrarArma(espada)
+    assert.equals(2670, legolas.poder())
+  }
+}
+
+describe "Viajes en grupo" {
+  const gandalf = new Maiar(vida = 100)
+  const pepe = new Hobbit(vida = 15)
+  const mariano = new Humano(vida = 1000, limitadorDePoder = 1000)
+  const pepeYGandalf = new GrupoDeGuerreros(integrantes = #{pepe, gandalf})
+  const marianoYGandalf = new GrupoDeGuerreros(
+    integrantes = #{mariano, gandalf}
+  )
+  const pepeYMariano = new GrupoDeGuerreros(integrantes = #{pepe, mariano})
+  const espadaMagica = new Espada(origen = elfico, multiplicador = 3)
+  
+  method initialize() {
+    9.times({ _ => pepe.agarrarObjeto(lemba) })
+    3.times({ _ => gandalf.agarrarObjeto(lemba) })
+    mariano.agarrarArma(espadaMagica)
+  }
+  
+  test "Un grupo no puede pasar por una zona por requerimiento de ítem" {
+    assert.notThat(marianoYGandalf.puedeRecorrerZona(minasTirith))
+  }
+  
+  test "Un grupo no puede pasar por una zona por requerimiento de guerrero" {
+    assert.notThat(pepeYMariano.puedeRecorrerZona(lebennin))
+  }
+  
+  test "Un grupo puede pasar por una zona que requiere items" {
+    assert.that(pepeYGandalf.puedeRecorrerZona(minasTirith))
+  }
+  
+  test "Un grupo puede pasar por una zona que requiere un guerrero fuerte" {
+    assert.that(pepeYGandalf.puedeRecorrerZona(lebennin))
+  }
+  
+  test "Un grupo puede pasar por una zona que requiere un guerrero armado" {
+    assert.that(marianoYGandalf.puedeRecorrerZona(bosqueDeFangorn))
+  }
+
+  test "Un grupo no puede atravesar un camino"{
+    const unCamino = new Camino(ubicaciones = [bosqueDeFangorn, minasTirith, lebennin])
+    assert.notThat(marianoYGandalf.puedeRecorrerCamino(unCamino))
+  }
+  
+  test "Un grupo puede atravesar un camino"{
+    const unCamino = new Camino(ubicaciones = [bosqueDeFangorn, edoras, lebennin])
+    assert.that(marianoYGandalf.puedeRecorrerCamino(unCamino))
+  }
+}
+
+
+
+//    TERCERA PARTE
+
+describe "Zonas con efectos"{
+  const gandalf = new Maiar(vida = 100)
+  const pepe = new Hobbit(vida = 15)
+  const mariano = new Humano(vida = 1000, limitadorDePoder = 1000)
+  const marianoYGandalf = new GrupoDeGuerreros(
+    integrantes = #{mariano, gandalf}
+  )
+  const pepeYMariano = new GrupoDeGuerreros(integrantes = #{pepe, mariano})
+  const espadaMagica = new Espada(origen = elfico, multiplicador = 3)
+  const unCamino = new Camino(ubicaciones = [bosqueDeFangorn, edoras, lamedon, belfalas, lebennin, minasTirith])
+  const otroCamino = new Camino(ubicaciones = [bosqueDeFangorn, edoras])
+  method initialize() {
+    9.times{ _ => pepe.agarrarObjeto(lemba) }
+    3.times{ _ => gandalf.agarrarObjeto(lemba) }
+    mariano.agarrarArma(espadaMagica)
+    mariano.agarrarObjeto(capaElfica)
+  }
+
+  test "Grupo intenta atravesar una zona que no puede como parte de un grupo en un camino"{
+      assert.throwsExceptionWithType(new GrupoNoPuedeRecorrerCaminoException(), {pepeYMariano.recorrerCamino(unCamino)})
+    }
+
+  test "Mariano pierde una capa elfica"{
+    assert.equals(1, mariano.cuantoDeCiertoItem(capaElfica))
+    marianoYGandalf.recorrerCamino(otroCamino)
+    assert.equals(0, mariano.cuantoDeCiertoItem(capaElfica))
+  }
+
+  test "Gandalf no pierde nada"{    
+    assert.equals(0, gandalf.cuantoDeCiertoItem(capaElfica))
+    marianoYGandalf.recorrerCamino(otroCamino)
+    assert.equals(0, gandalf.cuantoDeCiertoItem(capaElfica))
+    }
+  
+  test "Boromir se muere"{
+    const boromir = new Humano(vida = 20, limitadorDePoder = 1)
+    const perder21DeVida = new RestarVida(cantidad = 21)
+    const pradosParthGalen = new Zona(efectoIndividual = perder21DeVida, region = desconocida)
+    boromir.recorrerZona(pradosParthGalen)
+    assert.that(boromir.fueraDeCombate())
+  }
+}
+describe "Caminos"{
+    test "Camino Valido"{
+      const unCamino = new Camino(ubicaciones = [bosqueDeFangorn, edoras, lamedon, belfalas, lebennin, minasTirith])
+      assert.that(unCamino.esValido())
+    }
+
+    test "Camino Invalido"{
+      const unCamino = new Camino(ubicaciones = [bosqueDeFangorn, edoras, lamedon, lossarnach, belfalas, lebennin, minasTirith])
+      assert.notThat(unCamino.esValido())
+    }
+
+    test "Camino que pasa por regiones"{
+      const unCamino = new Camino(ubicaciones = [lebennin, belfalas])
+      assert.that(unCamino.regionesQueRecorre() == #{gondor})
+    }
+}
