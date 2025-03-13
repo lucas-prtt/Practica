@@ -1,0 +1,54 @@
+import src.filosofo.*
+import src.actividades.*
+import src.discusion.*
+import src.partido.*
+import src.argumento.*
+import src.naturalezas.*
+
+
+describe "Pruebas"{
+    const diogenes = new Filosofo(nombre = "Diogenes", honorificos = #{"el cinico"}, edadEnDias = 365*57, nivelIluminacionBase = 600)
+    const confusio = new Filosofo(nombre = "Confusio", honorificos = #{"el sabio" , "el maestro"}, edadEnDias = 365*60+9, actividades = [practicarFutbol, practicarPolo, practicarWaterpolo], nivelIluminacionBase = 1200)
+    const darioZ = new FilosofoContemporaneo(nombre = "Dario Sztajnszrajber", honorificos = #{"el de nombre raro"}, edadEnDias = 365*40, actividades = [admirarPaisaje, practicarFutbol], nivelIluminacionBase = 360)
+    const hablarConConfusio = new JuntarseCon(conQuienSeJunta = confusio)
+    const argumentoEsceptico = new Argumento(naturalezas = #{esceptica}, descripcion = "Que es el tiempo?")
+    const argumentoDeConfusio = new Argumento(naturalezas = #{cinica}, descripcion = "TECONFUNDOTECONFUNDOTECONFUNDOTECONFUNDO")
+    const argumentoCombinado = new Argumento(naturalezas = #{moralista, esceptica}, descripcion = "aaa a aa dsa dsajnreeing rej nie gn ei nering eir gniu genri ???")
+    const partido1 = new Partido(filosofo = darioZ, argumentos = [argumentoEsceptico])
+    const partido2 = new Partido(filosofo = confusio, argumentos = [argumentoDeConfusio, argumentoCombinado]) 
+    const discusionSobreMorailidad = new Discusion(unPartido = partido1, otroPartido = partido2)
+    test "Diogenes se emborracha"{
+        diogenes.realizarActividad(tomarVino)
+        assert.equals("Diogenes, el cinico, el borracho", diogenes.presentarse())
+    }
+    test "Confusio tiene 60 anios"{
+        assert.equals(60, confusio.edad())
+    }
+    test "Confusio rejuvenece"{
+        5.times{_=>confusio.vivirUnDia()}
+        assert.equals(59, confusio.edad())
+    }
+
+    test "Confusio deja de ser sabio"{
+        5.times{_=>confusio.vivirUnDia()}
+        assert.equals("Confusio, el maestro", confusio.presentarse())
+    }
+
+    test "Diogenes se vuelve sabio"{
+        1500.times{_=>diogenes.vivirUnDia()}
+        assert.equals("Diogenes, el cinico, el sabio", diogenes.presentarse())
+    }
+
+    test "Dario z tiene 760 de iluminacion"{
+        assert.equals(760, darioZ.nivelIluminacion())
+    }
+
+    test "DarioZ viaja en el tiempo"{
+        6.times{_=>darioZ.realizarActividad(hablarConConfusio)}
+        assert.that(darioZ.estaEnLoCorrecto())
+    }
+    test "una dicusion es buena"{
+        6.times{_=>darioZ.realizarActividad(hablarConConfusio)}
+        assert.that(discusionSobreMorailidad.buena())
+    }
+}
