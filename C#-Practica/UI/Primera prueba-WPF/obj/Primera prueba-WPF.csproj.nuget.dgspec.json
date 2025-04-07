@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Lucas\\Git\\Practica\\C#-Practica\\UI\\Primera prueba-WPF\\Primera prueba-WPF.csproj": {}
+    "E:\\Lucas\\Git\\PracticaCodigo\\C#-Practica\\UI\\Primera prueba-WPF\\Primera prueba-WPF.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Lucas\\Git\\Practica\\C#-Practica\\UI\\Primera prueba-WPF\\Primera prueba-WPF.csproj": {
+    "E:\\Lucas\\Git\\PracticaCodigo\\C#-Practica\\UI\\Primera prueba-WPF\\Primera prueba-WPF.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Lucas\\Git\\Practica\\C#-Practica\\UI\\Primera prueba-WPF\\Primera prueba-WPF.csproj",
+        "projectUniqueName": "E:\\Lucas\\Git\\PracticaCodigo\\C#-Practica\\UI\\Primera prueba-WPF\\Primera prueba-WPF.csproj",
         "projectName": "Primera prueba-WPF",
-        "projectPath": "C:\\Users\\Lucas\\Git\\Practica\\C#-Practica\\UI\\Primera prueba-WPF\\Primera prueba-WPF.csproj",
-        "packagesPath": "C:\\Users\\Lucas\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Lucas\\Git\\Practica\\C#-Practica\\UI\\Primera prueba-WPF\\obj\\",
+        "projectPath": "E:\\Lucas\\Git\\PracticaCodigo\\C#-Practica\\UI\\Primera prueba-WPF\\Primera prueba-WPF.csproj",
+        "packagesPath": "C:\\Users\\Admin\\.nuget\\packages\\",
+        "outputPath": "E:\\Lucas\\Git\\PracticaCodigo\\C#-Practica\\UI\\Primera prueba-WPF\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\Lucas\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\Admin\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
