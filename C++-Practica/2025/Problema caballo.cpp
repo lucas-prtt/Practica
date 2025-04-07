@@ -21,6 +21,7 @@ void copiarMatriz(int origen[8][8], int destino[8][8]){
 }
 
 void mostrarTablero(int tablero[8][8]){
+    cout<<"=============";
     for(int i=0; i<8; i++){
         for(int j=0; j<8; j++){
             cout<<tablero[i][j]<<" ";
@@ -30,7 +31,8 @@ void mostrarTablero(int tablero[8][8]){
 }
 
 
-bool buscar(int paso, int x , int y , nodo_tablero * raiz){
+bool buscar(int paso, int x , int y , nodo_tablero * raiz, int tableroPadre[8][8]){
+    copiarMatriz(tableroPadre, raiz->tablero);
     if(paso == 65){
         
         return true;
@@ -41,19 +43,19 @@ bool buscar(int paso, int x , int y , nodo_tablero * raiz){
     }
     raiz->tablero[x][y]=paso;
     bool valido = false;
-    cout <<"<a<"<<x<<y<<">a>";
+    //cout <<"<a<"<<x<<y<<">a>";
     mostrarTablero(raiz->tablero);
     for(int i=0; i<8 and !valido; i++){
-        cout<<i;
+        //cout<<i;
         raiz->movimientos[i] = new nodo_tablero;
-        bool analizadoValido = buscar(paso+1, x+posibilidades[i][0], y+posibilidades[i][1], raiz->movimientos[i]);
+        bool analizadoValido = buscar(paso+1, x+posibilidades[i][0], y+posibilidades[i][1], raiz->movimientos[i], raiz->tablero);
         valido = valido or analizadoValido;
         if(!analizadoValido){
             delete raiz->movimientos[i];
             raiz->movimientos[i] = NULL;
         }
     }
-    cout<<"b";
+    //cout<<"b";
     return valido;
 }
 nodo_tablero * hallarEncontrado(int paso, nodo_tablero * raiz){
@@ -69,7 +71,7 @@ nodo_tablero * hallarEncontrado(int paso, nodo_tablero * raiz){
 void hallarMovimientos(int x_inicial, int y_inicial, int tablero_encontrado[8][8]){
     nodo_tablero * arbol = new nodo_tablero;
     nodo_tablero * encontrado;
-    bool encuentra = buscar(1, x_inicial, y_inicial, arbol);
+    bool encuentra = buscar(1, x_inicial, y_inicial, arbol, arbol->tablero);
     if (!encuentra){
         cout<<"Imposible";
     }
