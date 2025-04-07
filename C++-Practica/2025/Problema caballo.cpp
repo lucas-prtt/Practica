@@ -4,7 +4,7 @@
 #include <iostream>
 
 using namespace std;
-
+const int NIVEL = 64;
 int static posibilidades[8][2] = {{1, 2},{-1, 2},{1, -2},{-1, -2},{2, 1},{-2, 1},{2, -1},{-2, -1}};
 
 struct nodo_tablero{
@@ -33,7 +33,7 @@ void mostrarTablero(int tablero[8][8]){
 
 bool buscar(int paso, int x , int y , nodo_tablero * raiz, int tableroPadre[8][8]){
     copiarMatriz(tableroPadre, raiz->tablero);
-    if(paso == 65){
+    if(paso == NIVEL){
         
         return true;
     }
@@ -44,7 +44,7 @@ bool buscar(int paso, int x , int y , nodo_tablero * raiz, int tableroPadre[8][8
     raiz->tablero[x][y]=paso;
     bool valido = false;
     //cout <<"<a<"<<x<<y<<">a>";
-    mostrarTablero(raiz->tablero);
+    //mostrarTablero(raiz->tablero);
     for(int i=0; i<8 and !valido; i++){
         //cout<<i;
         raiz->movimientos[i] = new nodo_tablero;
@@ -59,7 +59,7 @@ bool buscar(int paso, int x , int y , nodo_tablero * raiz, int tableroPadre[8][8
     return valido;
 }
 nodo_tablero * hallarEncontrado(int paso, nodo_tablero * raiz){
-    if(paso == 64){
+    if(paso == NIVEL){
         return raiz;
     }
     for(int i = 0; i<8; i++){
