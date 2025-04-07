@@ -5,17 +5,58 @@
 
 using namespace std;
 
+int static posibilidades[8][2] = {{1, 2},{-1, 2},{1, -2},{-1, -2},{2, 1},{-2, 1},{2, -1},{-2, -1}};
+
 struct nodo_tablero{
     int tablero[8][8] = {0};
-    nodo_tablero *movimientos[8];
+    nodo_tablero *movimientos[8] = {NULL};
 };
+bool buscar(int paso, int x , int y , nodo_tablero * raiz){
+    if(paso == 65){
 
+        return true;
+    }
+    if(x<0 or x>=8 or y<0 or y>=8 or raiz->tablero[x][y] != 0){
+        delete raiz;
+        return false;
+    }
+    raiz->tablero[x][y]=paso;
+    bool valido = false;
+    for(int i=0; i<8 and !valido; i++){
+    raiz->movimientos[i] = new nodo_tablero;
+    bool analizadoValido = buscar(paso+1, x+posibilidades[i][0], y+posibilidades[i][1], raiz->movimientos[i]);
+    valido = valido or analizadoValido;
+    if(!analizadoValido){
+        delete raiz->movimientos[i];
+        raiz->movimientos[i] = NULL;
+    }
+    }
+    return valido;
+}
+nodo_tablero * hallarEncontrado(int paso, nodo_tablero * raiz){
+    if(paso == 64){
+        return raiz;
+    }
+    for(int i = 0; i<8; i++){
+        if(raiz->movimientos[i]!= NULL)
+        {return hallarEncontrado(paso + 1, raiz->movimientos[i]);}
+    }
+    return NULL;
+}
 void hallarMovimientos(int x_inicial, int y_inicial, int tablero_encontrado[8][8]){
     nodo_tablero * arbol = new nodo_tablero;
-    
+    nodo_tablero * encontrado;
+    bool encuentra = buscar(1, x_inicial, y_inicial, arbol);
+    if (!encuentra){
+        cout<<"Imposible";
+    }
+    else{
+        cout<<"Encontrado!\n";
+        encontrado = hallarEncontrado(1, arbol);
+    }
     for(int i=0; i<8; i++){
         for(int j=0; j<8; j++){
-            tablero_encontrado[i][j] = arbol->tablero[i][j];
+            tablero_encontrado[i][j] = encontrado->tablero[i][j];
         }
     }
     delete arbol;
