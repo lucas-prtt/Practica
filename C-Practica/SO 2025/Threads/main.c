@@ -7,7 +7,7 @@ void * checkAndPrint(void* numero);
 int main(){
     printf("Hola World!");
     printf("\nCon threads\n");
-    /*
+    
     pthread_t * thread1 ;
     pthread_t * thread2 ;
     thread1 = malloc(sizeof(thread1));
@@ -18,7 +18,7 @@ int main(){
     pthread_join(*thread2, NULL);
     free(thread1);
     free(thread2);
-    */
+    
     int numero = 1;
     pthread_t  * otroThread;
     otroThread = malloc(sizeof(otroThread));
