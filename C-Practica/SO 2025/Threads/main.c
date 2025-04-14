@@ -4,10 +4,10 @@
 #include <unistd.h>
 void * printUpTo1000(void* _);
 void * checkAndPrint(void* numero);
-
 int main(){
     printf("Hola World!");
     printf("\nCon threads\n");
+    /*
     pthread_t * thread1 ;
     pthread_t * thread2 ;
     thread1 = malloc(sizeof(thread1));
@@ -18,15 +18,15 @@ int main(){
     pthread_join(*thread2, NULL);
     free(thread1);
     free(thread2);
-
-    int input = 2;
+    */
+    int numero = 1;
     pthread_t  * otroThread;
     otroThread = malloc(sizeof(otroThread));
-    pthread_create(otroThread, NULL, checkAndPrint, (void*)&input);
-    while (input != 0){
-        scanf("%d", &input); //El scanf pausa mostrar los caracteres del thread
-        printf("%d", input);
-    }
+    pthread_create(otroThread, NULL, checkAndPrint, (void*)&numero);
+    getchar();
+    numero = 0;
+    pthread_join(*otroThread, NULL);
+
     free(otroThread);
     return 0;
 
@@ -42,9 +42,9 @@ void * printUpTo1000(void* _){
 }
 
 void * checkAndPrint(void* numero){
-    while(*(int*)numero < 50){
+    while(*(int*)numero){
         printf("?");
-        sleep(1);
+        fflush(stdout);
+        usleep(200000);
     }
-    pthread_exit(0);
 }
