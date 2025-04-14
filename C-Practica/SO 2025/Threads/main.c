@@ -42,9 +42,21 @@ void * printUpTo1000(void* _){
 }
 
 void * checkAndPrint(void* numero){
+        printf("\n\nPress enter to stop.\nWaiting for incoming conections");
     while(*(int*)numero){
-        printf("?");
+        printf(".");
         fflush(stdout);
-        usleep(200000);
+        usleep(500000);
+        printf(".");
+        fflush(stdout);
+        usleep(500000);
+        printf(".");
+        fflush(stdout);
+        usleep(500000);
+        printf("\b\b\b");
+        printf("   ");
+        printf("\b\b\b");
+        fflush(stdout);
+        usleep(500000);
     }
 }
