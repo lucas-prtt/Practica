@@ -1,0 +1,50 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+#include <unistd.h>
+void * printUpTo1000(void* _);
+void * checkAndPrint(void* numero);
+
+int main(){
+    printf("Hola World!");
+    printf("\nCon threads\n");
+    pthread_t * thread1 ;
+    pthread_t * thread2 ;
+    thread1 = malloc(sizeof(thread1));
+    thread2 = malloc(sizeof(thread2));
+    pthread_create(thread1, NULL, printUpTo1000, NULL);
+    pthread_create(thread2, NULL, printUpTo1000, NULL);
+    pthread_join(*thread1, NULL); //Espera a que el thread termine
+    pthread_join(*thread2, NULL);
+    free(thread1);
+    free(thread2);
+
+    int input = 2;
+    pthread_t  * otroThread;
+    otroThread = malloc(sizeof(otroThread));
+    pthread_create(otroThread, NULL, checkAndPrint, (void*)&input);
+    while (input != 0){
+        scanf("%d", &input); //El scanf pausa mostrar los caracteres del thread
+        printf("%d", input);
+    }
+    free(otroThread);
+    return 0;
+
+}
+
+
+
+void * printUpTo1000(void* _){
+    for (int i = 0; i < 1000; i++){
+        printf(" %d ", i);
+    }
+    pthread_exit(0);
+}
+
+void * checkAndPrint(void* numero){
+    while(*(int*)numero < 50){
+        printf("?");
+        sleep(1);
+    }
+    pthread_exit(0);
+}
