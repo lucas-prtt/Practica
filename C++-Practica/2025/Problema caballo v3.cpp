@@ -6,25 +6,26 @@
 using namespace std;
 
 
-const int NIVEL = 64;
-int tablero[8][8];
+const int filas = 5;
+const int columnas = 5;
+const int NIVEL = filas*columnas;
+int tablero[columnas][filas];
 int static posibilidades[8][2] = {{1, 2},{-1, 2},{1, -2},{-1, -2},{2, 1},{-2, 1},{2, -1},{-2, -1}};
 
 int esValido(int x, int y){
-    return x<8 && x>=0 && y<8 && y>=0;
+    return x<columnas && x>=0 && y<filas && y>=0;
 }
 
-void mostrarTablero(int tableroAMostrar[8][8]){
+void mostrarTablero(int tableroAMostrar[columnas][filas]){
     cout<<"=============\n";
-    for(int i=0; i<8; i++){
-        for(int j=0; j<8; j++){
-            cout<<tableroAMostrar[i][j]<<" ";
+    for(int i=0; i<columnas; i++){
+        for(int j=0; j<filas; j++){
+            cout<<tableroAMostrar[j][i]<<" ";
         }
         cout<<"\n";
     }
 }
 int hallarMovimientos(int x, int y, int profundidad){
-    mostrarTablero(tablero);
     if (profundidad == NIVEL) // Si se llega a 64, terminar
         return 1;
 
