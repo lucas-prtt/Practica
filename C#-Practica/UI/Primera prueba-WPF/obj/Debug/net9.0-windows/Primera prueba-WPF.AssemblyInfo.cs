@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("Primera prueba-WPF")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+04727f3aa3362ccd5fdf697462f4afa8972b3f9a")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6e475e663a101991bdf7b6684b4f6875d9c164db")]
 [assembly: System.Reflection.AssemblyProductAttribute("Primera prueba-WPF")]
 [assembly: System.Reflection.AssemblyTitleAttribute("Primera prueba-WPF")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
