@@ -1,8 +1,8 @@
 from math import sqrt, pow
 import time
 
-file = open("./8 - Playground/test.txt")
-connectionsAmount = 10
+file = open("./8 - Playground/puzzle-input.txt")
+connectionsAmount = 1000
 
 
 class JunctionBox:
@@ -98,7 +98,7 @@ print("Closest boxes connected in {} ms".format(msSince(startTime)))
 circuits = nonRepeatingCircuits(boxes)
 circuits.sort(key=len, reverse=True)
 
-
+print(len(circuits[0])*len(circuits[1])*len(circuits[2]))
 
 
 
