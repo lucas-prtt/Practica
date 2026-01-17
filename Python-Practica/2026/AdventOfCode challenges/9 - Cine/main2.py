@@ -35,12 +35,12 @@ def horizontalRaycastCollides(line:tuple[tuple[int, int], tuple[int, int]], poin
     (x1, y1), (x2, y2) = line
     # false = Vertical, true = Horizontal
     h1 = y1 == y2
-    if h1:  # Si se superponen cuento como que no se cruzan
+    if h1:  # Si se superponen cuento como que se cruzan
         return False # Raycast horizontal
     
     x1, x2 = sorted((x1, x2))
     y1, y2 = sorted((y1, y2))
-    return point[0] <= x1 and y1 <= point[1] <= y2 # Raycast a la derecha
+    return point[0] <=x1 and y1 <= point[1] <= y2 # Raycast a la derecha
 
 def getLines(geometry:list[tuple[int, int]]):
     for j in range(len(geometry)-2):
@@ -63,9 +63,6 @@ def rectInside(geometry:list[tuple[int, int]], point1:tuple[int, int], point2:tu
     if(not pointInside(geometry, puntoIntermedio)):
         return False
     corners = [point1, (point1[0], point2[1]), point2, (point1[1], point2[0])]
-    for c in corners:
-        if pointInside(geometry, c):
-            return False
     for border in [(corners[0], corners[1]), (corners[1], corners[2]), (corners[2], corners[3]), (corners[3], corners[0])]:
         for geometryLine in getLines(geometry):
             if(linesCollide(geometryLine, border)):
@@ -85,7 +82,7 @@ for i in points:
         if(a>maxArea and rectInside(points, i, j)):
             maxPoints = i, j
             maxArea = a
-
+    print(maxArea)
     print(iterations)
 # Directo pero demasiado ineficiente. La verificacion de que este en el rectangulo es un cuello de botella y el resultado que produce es demasiado bajo, posiblemente porque estoy limitando mas de la cuenta
 # Es necesario encontrar una manera de reducir las ejecuciones de rectInside() cuando no es necesario, ver si se puede agilizar y mas importante, verificar bien casos bordes donde se esten poniendo algunos validos como invalidos
