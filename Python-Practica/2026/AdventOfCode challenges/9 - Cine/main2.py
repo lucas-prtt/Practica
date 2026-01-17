@@ -42,31 +42,52 @@ def horizontalRaycastCollides(line:tuple[tuple[int, int], tuple[int, int]], poin
     y1, y2 = sorted((y1, y2))
     return point[0] <= x1 and y1 <= point[1] <= y2 # Raycast a la derecha
 
-
+def getLines(geometry:list[tuple[int, int]]):
+    for j in range(len(geometry)-2):
+        yield (geometry[j], geometry[j+1])
+    yield (geometry[len(geometry)-1], geometry[0])
 
 def pointInside(geometry:list[tuple[int, int]], point:tuple[int, int]) -> bool:
     # Segun internet, se puede usar RayCasting o algoritmo radial
     i = 0
-    for j in range(len(geometry)-2):
-        i += 1 if horizontalRaycastCollides((geometry[j], geometry[j+1]), point) else 0
-    i += 1 if horizontalRaycastCollides((geometry[len(geometry)-1], geometry[0]), point) else 0
+    for line in getLines(geometry):
+        i += 1 if horizontalRaycastCollides(line, point) else 0
     return bool(i%2)
 
 def rectInside(geometry:list[tuple[int, int]], point1:tuple[int, int], point2:tuple[int, int]) -> bool:
-    inside = True
     # Si hay un punto entre los 4, False
+    # Si hay colision de los bordes, False
+    # Si un punto aleatorio dentro del cuadrado no esta en la geometria, False
+    # Sino True (No es ningun teorema. Me lo invente yo. Capaz que anda)
+    puntoIntermedio = ((point1[0] + point2[0])/2, (point1[1] + point2[1])/2)
+    if(not pointInside(geometry, puntoIntermedio)):
+        return False
     corners = [point1, (point1[0], point2[1]), point2, (point1[1], point2[0])]
-    return inside
+    for c in corners:
+        if pointInside(geometry, c):
+            return False
+    for border in [(corners[0], corners[1]), (corners[1], corners[2]), (corners[2], corners[3]), (corners[3], corners[0])]:
+        for geometryLine in getLines(geometry):
+            if(linesCollide(geometryLine, border)):
+                return False
+    return True
 
 points = parse(file)
 # Los puntos describen una gemoetria cerrada. El cuadrado elegido debe estar dentro de esta geometria
 
 maxPoints = points[0], points[1]
 maxArea = area(points[0], points[1])
-
+iterations = 0
 for i in points:
+    iterations+=1
     for j in points[points.index(i)+1:]:
         a = area(i, j)
-        if(a>maxArea):
+        if(a>maxArea and rectInside(points, i, j)):
             maxPoints = i, j
             maxArea = a
+
+    print(iterations)
+# Directo pero demasiado ineficiente. La verificacion de que este en el rectangulo es un cuello de botella y el resultado que produce es demasiado bajo, posiblemente porque estoy limitando mas de la cuenta
+# Es necesario encontrar una manera de reducir las ejecuciones de rectInside() cuando no es necesario, ver si se puede agilizar y mas importante, verificar bien casos bordes donde se esten poniendo algunos validos como invalidos
+print(maxArea, maxPoints)
+
