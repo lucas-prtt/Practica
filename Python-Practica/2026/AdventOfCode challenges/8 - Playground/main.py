@@ -1,4 +1,5 @@
 from math import sqrt, pow
+import time
 
 file = open("./8 - Playground/puzzle-input.txt")
 class JunctionBox:
@@ -21,34 +22,31 @@ def parse (file) -> list[JunctionBox]:
         boxes.append(JunctionBox(x, y, z))
     return boxes
 
+
+def allBoxesDistancesList(availableBoxes : list[JunctionBox]) -> list[tuple[JunctionBox, JunctionBox, int]]:
+    allDistances = []
+    for box1 in availableBoxes:
+        for box2 in availableBoxes[availableBoxes.index(box1)+1:]:
+            allDistances.append((box1, box2, box1.distance(box2)))
+    return allDistances # n(n+1/2)-n cajas
+
+def msSince(startTime):
+    return (time.perf_counter_ns()-startTime)/1000000
+
+
+startTime = time.perf_counter_ns()
 boxes = parse(file)
+print("{} boxes parsed in {} ms".format(len(boxes), msSince(startTime)))
+startTime = time.perf_counter_ns()
+boxesDistances = allBoxesDistancesList(boxes)
+print("{} distances calculated in {} ms. SizeOf: {} kb".format(len(boxesDistances), msSince(startTime), boxesDistances.__sizeof__()/1024))
+startTime = time.perf_counter_ns()
+boxesDistances.sort(key = lambda x : x[2])
+print("List of {} elements sorted in {} ms".format(len(boxesDistances), msSince(startTime)))
 
-def findClosestBox(availableBoxes: list[JunctionBox], box : JunctionBox) -> JunctionBox:
-    minBox = availableBoxes[0]
-    minDistance = minBox.distance(box)
-    for evalBox in availableBoxes[1:]:
-        distance = box.distance(evalBox)
-        if(distance < minDistance):
-            minDistance = distance
-            minBox = evalBox
-    return minBox
+#for i in range(5):
+#    print(boxesDistances[i])
 
-def pairDistance(pair : tuple[JunctionBox, JunctionBox]):
-    return pair[0].distance(pair[1])
 
-def findClosestPair(availableBoxes: list[JunctionBox]):
-    minPair = availableBoxes[0], availableBoxes[1]
-    minDistance = pairDistance(minPair)
-    for box in availableBoxes:
-        closestBox = findClosestBox(availableBoxes, box)
-        distance = closestBox.distance(box)
-        if(distance < minDistance):
-            minDistance = distance
-            minPair = box, closestBox
-    return minPair
-
-for i in range(10):
-    print(findClosestPair(boxes))
-# Muy lento. Pensar manera de almacenar resultados intermedios. Calcular la distancia miles de veces tarda mucho
 
 
