@@ -9,16 +9,18 @@ class Button:
 class Machine:
     def __init__(self, line:str):
         lights = re.search(r"\[[.#]+\]", line).group()
-        self.lights = list(map(lambda x : True if x == "#" else False, lights.removeprefix("[").removesuffix("]")))
+        self.targetLights = list(map(lambda x : True if x == "#" else False, lights.removeprefix("[").removesuffix("]")))
+        self.lights = list(False for i in range(self.targetLights.__len__()))
         buttons = re.findall(r"\((\d+(?:,\d+)*)\)", line)
         self.buttons = list(map(lambda x: Button(list(map(int, str(x).removeprefix("(").removesuffix(")").split(",")))),buttons))
         voltage = re.search(r"\{(\d+(?:,\d+)*)\}", line).group()
         self.voltage = list(map(int, voltage.removesuffix("}").removeprefix("{").split(",")))
     def __repr__(self):
-        return f"{self.lights} - {self.buttons} - {self.voltage} - {"ON" if self.isOn() else "OFF"}"
+        return f"{self.lightRep(self.lights)}/{self.lightRep(self.targetLights)} - {self.buttons} - {self.voltage} - {"ON" if self.isOn() else "OFF"}"
     def isOn(self):
-        return all(self.lights)
-
+        return all(map(lambda l: l[0] == l[1],zip(self.lights, self.targetLights)))
+    def lightRep(self, lights: list[bool]):
+        return "▕" + "".join(list(map(lambda b : "█" if b else "░", lights))) + "▏"
 
 machines = []
 for line in file.readlines():
