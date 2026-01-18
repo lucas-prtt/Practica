@@ -1,17 +1,19 @@
 import re
 from functools import reduce
+import time
 from itertools import combinations_with_replacement
-file = open("./10 - Fabrica/puzzle-input.txt")
+file = open("./10 - Fabrica/test.txt")
+def msSince(startTime):
+    return (time.perf_counter_ns()-startTime)/1000000
+
 class Button:
     def __init__(self, voltages:list[int]):
         self.voltages = voltages
     def __repr__(self):
         return f"({",".join(map(str, self.lights))})"
-    def press(self, voltage:list[int]) -> list[bool]:
-        newVoltage = voltage[:]
+    def press(self, voltage:list[int]) -> None:
         for i in self.voltages:
-            newVoltage[i] += 1
-        return newVoltage
+            voltage[i] += 1
 
 class Machine:
     def __init__(self, line:str):
@@ -24,10 +26,10 @@ class Machine:
     def isCorrect(self, voltages:list[int]):
         return all(map(lambda l: l[0] == l[1],zip(self.voltage, voltages)))
     def validSequence(self, buttons:list[Button]):
-        # Supongo que los buttons son parte de los asignados
-        return self.isCorrect(reduce(lambda l, b:b.press(l), buttons, [0] * len(self.voltage)))
-    def unfixable(self, buttons:list[Button]):
-        return any(map(lambda x, y: x<y, zip(self.voltage, reduce(lambda l, b:b.press(l), buttons, [0] * len(self.voltage)))))
+        nvoltage = [0] * len(self.voltage)
+        for b in buttons:
+            b.press(nvoltage)
+        return self.isCorrect(nvoltage)
 machines = []
 for line in file.readlines():
     machines.append(Machine(line))
@@ -46,7 +48,8 @@ def findSolution(machine : Machine) -> list[Button]:
                 return sol
 
 i = 0
-
-for m in machines: 
+t1 = time.perf_counter_ns()
+for m in machines*10: 
     i+=len(findSolution(m))
+print(f"Solved in {msSince(t1)} ms")
 print(i)
