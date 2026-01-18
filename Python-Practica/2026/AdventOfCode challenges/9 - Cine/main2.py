@@ -1,3 +1,6 @@
+# NO ANDA
+
+
 file = open("./9 - Cine/puzzle-input.txt")
 
 def parse(file) -> list[(int, int)]:
