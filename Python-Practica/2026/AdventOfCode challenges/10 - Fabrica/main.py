@@ -1,5 +1,6 @@
 import re
 from functools import reduce
+from itertools import combinations
 file = open("./10 - Fabrica/puzzle-input.txt")
 class Button:
     def __init__(self, lights:list[int]):
@@ -38,24 +39,18 @@ def listWithout(list:list, element):
     l.remove(element)
     return l
 def findSolution(machine : Machine) -> list[Button]:
-    # IMPLEMENTADO - Apretar un boton dos veces no tiene sentido. Max una vez por boton
-    # NO IMPLEMENTADO - El orden de los botones no altera el resultado
+    # Apretar un boton dos veces no tiene sentido. Max una vez por boton
+    # El orden de los botones no altera el resultado
+    # Son combinaciones sin repeticion
     # NO APLICA EN EL INPUT - Si dos botones son iguales, se puede simplificar considerando que es uno solo
     availableButtons = machine.buttons
-    queue = [] # tuple[list[Button], list[Button]] -> (Boton)
-    for button in availableButtons:
-        queue.append(([button], listWithout(availableButtons, button)))
-    while queue:
-        sol = queue.pop(0)
-        if(machine.validSequence(sol[0])):
-            return sol[0]
-        else:
-            for notSelected in sol[1]:
-                queue.append((sol[0] + [notSelected], listWithout(sol[1], notSelected)))
+    for i in range(1, len(availableButtons)+1):
+        for sol in combinations(availableButtons, i):
+            if(machine.validSequence(sol)):
+                return sol
 
 i = 0
 
 for m in machines: 
-    print(m, i)
     i+=len(findSolution(m))
 print(i)
