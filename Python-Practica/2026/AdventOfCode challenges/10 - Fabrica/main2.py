@@ -2,7 +2,7 @@ import re
 from functools import reduce
 import time
 from itertools import combinations_with_replacement
-file = open("./10 - Fabrica/test.txt")
+file = open("./10 - Fabrica/puzzle-input.txt")
 def msSince(startTime):
     return (time.perf_counter_ns()-startTime)/1000000
 
@@ -10,7 +10,7 @@ class Button:
     def __init__(self, voltages:list[int]):
         self.voltages = voltages
     def __repr__(self):
-        return f"({",".join(map(str, self.lights))})"
+        return f"({",".join(map(str, self.voltages))})"
     def press(self, voltage:list[int]) -> None:
         for i in self.voltages:
             voltage[i] += 1
@@ -25,12 +25,18 @@ class Machine:
         return f"{self.buttons} - {self.voltage}"
     def isCorrect(self, voltages:list[int]):
         return all(map(lambda l: l[0] == l[1],zip(self.voltage, voltages)))
-    def validSequence(self, buttons:list[Button]):
+    def voltageAfterPressing(self, buttons:list[Button]):
         nvoltage = [0] * len(self.voltage)
         for b in buttons:
             b.press(nvoltage)
-        return self.isCorrect(nvoltage)
+        return nvoltage
+    def validSequence(self, buttons:list[Button]):
+        return self.isCorrect(self.voltageAfterPressing(buttons))
+    def unfixable(self, buttons:list[Button]):
+        return any(map(lambda x: x[0]<x[1], zip(self.voltage, self.voltageAfterPressing(buttons))))
 machines = []
+def sortByVoltages(buttons : list[Button]):
+    buttons.sort(key=lambda x : len(x.voltages), reverse=True)
 for line in file.readlines():
     machines.append(Machine(line))
 def listWithout(list:list, element):
@@ -42,14 +48,25 @@ def findSolution(machine : Machine) -> list[Button]:
     # No tiene sentido presionar botones que modifican los numeros que ya estan correctos
     # Si un "Camino" se pasa en un numero de entrada, no tiene sentido intentar agregar mas cosas
     availableButtons = machine.buttons
-    for i in range(1, sum(machine.voltage)):
-        for sol in combinations_with_replacement(availableButtons, i):
-            if(machine.validSequence(sol)):
-                return sol
-
+    sortByVoltages(availableButtons)
+    return findButtons(machine, [])
+def findButtons(machine:Machine, buttons:list[Button]):
+    print(f"{buttons} - {machine.voltageAfterPressing(buttons)}")
+    if(machine.unfixable(buttons)):
+        return None # Corte temprano. Se esta pasando
+    if(machine.validSequence(buttons)):
+        return buttons # Corte correcto. Es solucion
+    else:
+        for b in machine.buttons:
+            ans = findButtons(machine, buttons + [b])
+            if(ans != None):
+                return ans
+        return None # Rama entera no sirve
 i = 0
 t1 = time.perf_counter_ns()
-for m in machines*10: 
-    i+=len(findSolution(m))
+for m in machines: 
+    sol = findSolution(m)
+    i+=len(sol)
+    print(sol)
 print(f"Solved in {msSince(t1)} ms")
 print(i)
