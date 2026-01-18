@@ -2,7 +2,7 @@ import re
 from functools import reduce
 import time
 from itertools import combinations_with_replacement
-file = open("./10 - Fabrica/puzzle-input.txt")
+file = open("./10 - Fabrica/test.txt")
 def msSince(startTime):
     return (time.perf_counter_ns()-startTime)/1000000
 
@@ -44,29 +44,22 @@ def listWithout(list:list, element):
     l.remove(element)
     return l
 def findSolution(machine : Machine) -> list[Button]:
-    # El orden no importa, se puede repetir el boton, combinaciones con repeticiones
-    # No tiene sentido presionar botones que modifican los numeros que ya estan correctos
-    # Si un "Camino" se pasa en un numero de entrada, no tiene sentido intentar agregar mas cosas
-    availableButtons = machine.buttons
-    sortByVoltages(availableButtons)
-    return findButtons(machine, [])
-def findButtons(machine:Machine, buttons:list[Button]):
-    print(f"{buttons} - {machine.voltageAfterPressing(buttons)}")
-    if(machine.unfixable(buttons)):
-        return None # Corte temprano. Se esta pasando
-    if(machine.validSequence(buttons)):
-        return buttons # Corte correcto. Es solucion
-    else:
-        for b in machine.buttons:
-            ans = findButtons(machine, buttons + [b])
-            if(ans != None):
-                return ans
-        return None # Rama entera no sirve
+    buttons = machine.buttons
+    voltage = machine.voltage[:]
+    matrizGaussiana = list([] for x in range(len(buttons) + 1))
+    for n, i in enumerate(buttons):
+        for j in range(len(machine.voltage)):
+            matrizGaussiana[n].append(0)
+        for v in i.voltages:
+            matrizGaussiana[n][v] = 1
+    for i in voltage:
+        matrizGaussiana[len(matrizGaussiana)-1].append(i)
+    print(matrizGaussiana)
+    
 i = 0
 t1 = time.perf_counter_ns()
 for m in machines: 
     sol = findSolution(m)
-    i+=len(sol)
     print(sol)
 print(f"Solved in {msSince(t1)} ms")
 print(i)
