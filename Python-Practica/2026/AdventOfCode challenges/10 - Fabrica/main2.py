@@ -26,7 +26,8 @@ class Machine:
     def validSequence(self, buttons:list[Button]):
         # Supongo que los buttons son parte de los asignados
         return self.isCorrect(reduce(lambda l, b:b.press(l), buttons, [0] * len(self.voltage)))
-
+    def unfixable(self, buttons:list[Button]):
+        return any(map(lambda x, y: x<y, zip(self.voltage, reduce(lambda l, b:b.press(l), buttons, [0] * len(self.voltage)))))
 machines = []
 for line in file.readlines():
     machines.append(Machine(line))
@@ -35,6 +36,9 @@ def listWithout(list:list, element):
     l.remove(element)
     return l
 def findSolution(machine : Machine) -> list[Button]:
+    # El orden no importa, se puede repetir el boton, combinaciones con repeticiones
+    # No tiene sentido presionar botones que modifican los numeros que ya estan correctos
+    # Si un "Camino" se pasa en un numero de entrada, no tiene sentido intentar agregar mas cosas
     availableButtons = machine.buttons
     for i in range(1, sum(machine.voltage)):
         for sol in combinations_with_replacement(availableButtons, i):
