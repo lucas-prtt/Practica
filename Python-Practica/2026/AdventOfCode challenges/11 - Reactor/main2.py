@@ -1,5 +1,8 @@
 import re
 from typing import Callable
+import time
+from pympler import asizeof
+startTime = time.perf_counter_ns()
 input = "./11 - Reactor/puzzle-input.txt"
 def find(criteria:Callable, flist:list):
     return next(filter(criteria, flist))
@@ -44,7 +47,16 @@ def parse():
 devices = parse()
 def findDevice(code:str) -> Device: return find(lambda x:x.code == code, devices)
 
-me = findDevice("svr")
-print(me.pathsTo("out"))
+def findPaths(points:list[str]):
+    paths = 1
+    start = points[0]
+    for p in points[1:]:
+        foundPaths = findDevice(start).pathsTo(p)
+        # print(f"From {start} to {p}: {foundPaths}")
+        paths *= foundPaths
+        start = p
+    return paths
+# Puse las combinaciones manualmente, pero se puede permutar las que estan entre el inicio y el final y sirve para n nodos sumando todos los caminos
+print(f"Total paths: {findPaths(["svr","dac","fft","out"]) + findPaths(["svr", "fft", "dac", "out"])}")
 
-
+print(f"Solved in {(time.perf_counter_ns()-startTime)/100000} ms, size in memory: {asizeof.asizeof(devices)/1000:.2f} KB")
