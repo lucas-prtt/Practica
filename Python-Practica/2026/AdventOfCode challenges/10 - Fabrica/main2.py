@@ -1,7 +1,7 @@
 import re
 from functools import reduce
 from itertools import combinations_with_replacement, combinations
-file = open("./10 - Fabrica/test.txt")
+file = open("./10 - Fabrica/puzzle-input.txt")
 class Button:
     def __init__(self, voltages:list[int]):
         self.voltages= voltages
@@ -44,27 +44,39 @@ def findSolution(machine : Machine) -> list[Button]:
     voltages = machine.voltage
     return findSolutionRec(availableButtons, voltages)
 
-def findSolutionRec(buttons : list[Button], voltages : list[int]):
+def findSolutionRec(buttons : list[Button], voltagesParam : list[int]):
+    voltages = voltagesParam[:] # Por las dudas creo lista duplicada
     # Va a dividir los problemas en 2 hasta poderlos resolver. Puede que sea buena idea guardar los resultados parciales en un diccionario para agilizar. No estoy seguro que sea la solucion optima, pero al menos me va a dar una solucion. Luego veo como optimizarla
     def easilySolvable(voltages : list[int]):
-        return sum(voltages)/len(voltages) <= 10
+        return sum(voltages)/len(voltages) <= 20
     
     if(easilySolvable(voltages)):
         for i in range(1, sum(voltages)):
             for sol in combinations_with_replacement(buttons, i):
                 if(validSequence(voltages, sol)):
                     return sol
+        raise Exception("No se pudo resolver", buttons, voltages)
     else:
-        return []
-        # Dividir problema en 2 y llamar recursivamente
+        sol = []
+        paritySol = findForParity(buttons, voltages)
+        print(paritySol, voltages, buttons)
+        for b in paritySol:
+            b.press(voltages) # Modifica lista, quedan todos los voltages pares
+        sol.extend(paritySol)
+        halfVoltages = list(map(lambda x : int(x/2), voltages))
+        halfSol = findSolutionRec(buttons, halfVoltages)
+        # Dividir problema en 2 y llamar recursivamente. Un solo llamado alcanza, ya que son iguales
+        sol.extend(halfSol)
+        sol.extend(halfSol)
+        return sol 
     
 
-def findForParity(machine = [Machine], voltages = list[int]) -> list[Button]:
-    availableButtons = machine.buttons
-    for i in range(1, len(availableButtons)+1):
-        for sol in combinations(availableButtons, i):
+def findForParity(buttons : list[Button], voltages = list[int]) -> list[Button]:
+    for i in range(1, len(buttons)+1):
+        for sol in combinations(buttons, i):
             if(validForParity(voltages, sol)):
-                return sol
+                return list(sol)
+    raise Exception(f"No se pudo resolver paridad. Botones:{buttons}, Voltajes{voltages}")
 
 
 
