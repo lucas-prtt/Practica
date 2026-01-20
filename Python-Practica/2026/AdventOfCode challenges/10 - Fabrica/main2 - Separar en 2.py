@@ -52,35 +52,28 @@ def findSolutionRec(buttons : list[Button], voltagesParam : list[int]):
     #print(f"Called: {buttons}, {voltagesParam}")
     paritySols = list(findForParity(buttons, voltagesParam))
     #print(f"{paritySols}")
-    def solvable(voltages):
-        return sum(voltages) / len(voltages) < 2
-    
+
     for paritySol in paritySols:
         voltages = voltagesParam[:]
-        if(solvable(voltages)):
-            for i in range(1, sum(voltages)):
-                for sol in combinations_with_replacement(buttons, i):
-                    if(validSequence(voltages, sol)):
-                        return sol
-            raise Exception("No se pudo resolver", buttons, voltages)
-        else:
-            try:
-                sol = []
-                for b in paritySol:
-                    b.unpress(voltages) # Modifica lista, quedan todos los voltages pares
-                sol.extend(paritySol)
-                partialVoltages = list(map(lambda x : int(x/2), voltages))
-                partialSol = findSolutionRec(buttons, partialVoltages)
-                sol.extend(partialSol)
-                sol.extend(partialSol)
-                return sol
-            except:
-                pass 
+        if(all(map(lambda x: x == 0, voltages))):
+            return []
+        try:
+            sol = []
+            for b in paritySol:
+                b.unpress(voltages) # Modifica lista, quedan todos los voltages pares
+            sol.extend(paritySol)
+            partialVoltages = list(map(lambda x : int(x/2), voltages))
+            partialSol = findSolutionRec(buttons, partialVoltages)
+            sol.extend(partialSol)
+            sol.extend(partialSol)
+            return sol
+        except:
+            pass 
     raise Exception("No se pudo resolver", buttons, voltagesParam)
 
         
 
-def findForParity(buttons : list[Button], voltages = list[int]) -> list[Button]:
+def findForParity(buttons : list[Button], voltages = list[int]):
     for i in range(0, len(buttons)+1):
         for sol in combinations(buttons, i):
             if(validForParity(voltages, sol)):
@@ -89,8 +82,11 @@ def findForParity(buttons : list[Button], voltages = list[int]) -> list[Button]:
 
 
 i = 0
-
+it = 0
 for m in machines: 
     sol = findSolution(m)
-    print(f"SOLUCION: ({len(sol)}), {sol}")
-
+    i+=len(sol)
+    it+=1
+    print(it, i)
+    #print(f"SOLUCION: ({len(sol)}), {sol}")
+print(i)
