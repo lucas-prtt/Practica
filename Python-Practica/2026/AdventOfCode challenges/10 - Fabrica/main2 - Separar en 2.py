@@ -28,12 +28,11 @@ def validSequence(voltagesGoal:list[int], buttons:list[Button]):
         b.press(voltages)
     return all(map(lambda x : x[0] == x[1], zip(voltages, voltagesGoal)))
 
-def validForMultiple(multiple : int, parityGoal:list[int], buttons:list[Button]):
-    # 1 = impar, 0 = par
+def validForParity(parityGoal:list[int], buttons:list[Button]):
     voltages = [0 for x in range(len(parityGoal))]
     for b in buttons:
         b.press(voltages)
-    return all(map(lambda x : x[0]%multiple == x[1]%multiple, zip(voltages, parityGoal)))
+    return all(map(lambda x : x[0]%2 == x[1]%2, zip(voltages, parityGoal)))
 
 
 machines = []
@@ -45,48 +44,53 @@ for line in file.readlines():
 def findSolution(machine : Machine) -> list[Button]:
     availableButtons = machine.buttons
     voltages = machine.voltage
+    #print(f"Called: {availableButtons}, {voltages}")
     return findSolutionRec(availableButtons, voltages)
 
 def findSolutionRec(buttons : list[Button], voltagesParam : list[int]):
-    voltages = voltagesParam[:] # Por las dudas creo lista duplicada
     # Va a dividir los problemas en 2 hasta poderlos resolver. Puede que sea buena idea guardar los resultados parciales en un diccionario para agilizar. No estoy seguro que sea la solucion optima, pero al menos me va a dar una solucion. Luego veo como optimizarla
-    m = 0
-    for i in range(1, int(sum(voltages)/2)):
-        paritySol = findForMultiple(i, buttons, voltages)
-        m = i
-        if(paritySol == None):
-            break
-    if(paritySol == None):
-        for i in range(1, sum(voltages)):
-            for sol in combinations_with_replacement(buttons, i):
-                if(validSequence(voltages, sol)):
-                    return sol
-        raise Exception("No se pudo resolver", buttons, voltages)
-    else:
-        sol = []
-        for b in paritySol:
-            b.unpress(voltages) # Modifica lista, quedan todos los voltages pares
-        sol.extend(paritySol)
-        partialVoltages = list(map(lambda x : int(x/m), voltages))
-        partialSol = findSolutionRec(buttons, partialVoltages)
-        # Dividir problema en 2 y llamar recursivamente. Un solo llamado alcanza, ya que son iguales
-        for i in range(m):
-            sol.extend(partialSol)
-        return sol 
+    #print(f"Called: {buttons}, {voltagesParam}")
+    paritySols = list(findForParity(buttons, voltagesParam))
+    #print(f"{paritySols}")
+    def solvable(voltages):
+        return sum(voltages) / len(voltages) < 2
     
+    for paritySol in paritySols:
+        voltages = voltagesParam[:]
+        if(solvable(voltages)):
+            for i in range(1, sum(voltages)):
+                for sol in combinations_with_replacement(buttons, i):
+                    if(validSequence(voltages, sol)):
+                        return sol
+            raise Exception("No se pudo resolver", buttons, voltages)
+        else:
+            try:
+                sol = []
+                for b in paritySol:
+                    b.unpress(voltages) # Modifica lista, quedan todos los voltages pares
+                sol.extend(paritySol)
+                partialVoltages = list(map(lambda x : int(x/2), voltages))
+                partialSol = findSolutionRec(buttons, partialVoltages)
+                sol.extend(partialSol)
+                sol.extend(partialSol)
+                return sol
+            except:
+                pass 
+    raise Exception("No se pudo resolver", buttons, voltagesParam)
 
-def findForMultiple(multiple : int, buttons : list[Button], voltages = list[int]) -> list[Button]:
-    for i in range(1, len(buttons)+1):
+        
+
+def findForParity(buttons : list[Button], voltages = list[int]) -> list[Button]:
+    for i in range(0, len(buttons)+1):
         for sol in combinations(buttons, i):
-            if(validForMultiple(multiple, voltages, sol)):
-                return list(sol)
+            if(validForParity(voltages, sol)):
+                yield list(sol)
 
 
 
 i = 0
 
 for m in machines: 
-    i+=len((findSolution(m)))
-    print(i)
+    sol = findSolution(m)
+    print(f"SOLUCION: ({len(sol)}), {sol}")
 
-print(i) # Debe ser 33 en test
