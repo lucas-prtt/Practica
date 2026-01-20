@@ -41,10 +41,23 @@ for line in file.readlines():
 
 def findSolution(machine : Machine) -> list[Button]:
     availableButtons = machine.buttons
-    for i in range(1, sum(machine.voltage)):
-        for sol in combinations_with_replacement(availableButtons, i):
-            if(validSequence(machine.voltage, sol)):
-                return sol
+    voltages = machine.voltage
+    return findSolutionRec(availableButtons, voltages)
+
+def findSolutionRec(buttons : list[Button], voltages : list[int]):
+    # Va a dividir los problemas en 2 hasta poderlos resolver. Puede que sea buena idea guardar los resultados parciales en un diccionario para agilizar. No estoy seguro que sea la solucion optima, pero al menos me va a dar una solucion. Luego veo como optimizarla
+    def easilySolvable(voltages : list[int]):
+        return sum(voltages)/len(voltages) <= 10
+    
+    if(easilySolvable(voltages)):
+        for i in range(1, sum(voltages)):
+            for sol in combinations_with_replacement(buttons, i):
+                if(validSequence(voltages, sol)):
+                    return sol
+    else:
+        return []
+        # Dividir problema en 2 y llamar recursivamente
+    
 
 def findForParity(machine = [Machine], voltages = list[int]) -> list[Button]:
     availableButtons = machine.buttons
@@ -58,7 +71,6 @@ def findForParity(machine = [Machine], voltages = list[int]) -> list[Button]:
 i = 0
 
 for m in machines: 
-    i+=1 
-    print(f"MAQUINA - {i}")
-    print(findSolution(m))
-    print(findForParity(m, m.voltage))
+    i+=len((findSolution(m)))
+
+print(i) # Debe ser 33 en test
