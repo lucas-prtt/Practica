@@ -1,6 +1,6 @@
 import re
 from functools import reduce
-from itertools import combinations_with_replacement
+from itertools import combinations_with_replacement, combinations
 file = open("./10 - Fabrica/test.txt")
 class Button:
     def __init__(self, voltages:list[int]):
@@ -19,12 +19,19 @@ class Machine:
         self.voltage = list(map(int, voltage.removesuffix("}").removeprefix("{").split(",")))
     def __repr__(self):
         return f"{self.buttons} - {self.voltage}"
-    def validSequence(self, buttons:list[Button]):
+def validSequence(voltagesGoal:list[int], buttons:list[Button]):
+    voltages = [0 for x in range(len(voltagesGoal))]
+    for b in buttons:
+        b.press(voltages)
+    return all(map(lambda x : x[0] == x[1], zip(voltages, voltagesGoal)))
 
-        voltages = [0 for x in range(len(self.voltage))]
-        for b in buttons:
-            b.press(voltages)
-        return all(map(lambda x : x[0] == x[1], zip(voltages, self.voltage)))
+def validForParity(parityGoal:list[int], buttons:list[Button]):
+    # 1 = impar, 0 = par
+    voltages = [0 for x in range(len(parityGoal))]
+    for b in buttons:
+        b.press(voltages)
+    return all(map(lambda x : x[0]%2 == x[1]%2, zip(voltages, parityGoal)))
+
 
 machines = []
 
@@ -36,11 +43,22 @@ def findSolution(machine : Machine) -> list[Button]:
     availableButtons = machine.buttons
     for i in range(1, sum(machine.voltage)):
         for sol in combinations_with_replacement(availableButtons, i):
-            if(machine.validSequence(sol)):
+            if(validSequence(machine.voltage, sol)):
                 return sol
+
+def findForParity(machine = [Machine], voltages = list[int]) -> list[Button]:
+    availableButtons = machine.buttons
+    for i in range(1, len(availableButtons)+1):
+        for sol in combinations(availableButtons, i):
+            if(validForParity(voltages, sol)):
+                return sol
+
+
 
 i = 0
 
 for m in machines: 
-    i+=len(findSolution(m))
-print(i)
+    i+=1 
+    print(f"MAQUINA - {i}")
+    print(findSolution(m))
+    print(findForParity(m, m.voltage))
