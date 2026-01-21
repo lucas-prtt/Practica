@@ -1,7 +1,8 @@
 import re
 from functools import reduce
 from itertools import combinations_with_replacement, combinations
-file = open("./10 - Fabrica/puzzle-input.txt")
+import time
+file = open("./10 - Fabrica/test.txt")
 class Button:
     def __init__(self, voltages:list[int]):
         self.voltages= voltages
@@ -85,10 +86,12 @@ def findForParity(buttons : list[Button], voltages = list[int]):
 
 i = 0
 it = 0
+start = time.perf_counter()
 for m in machines: 
     sol = findSolution(m)
     i+=len(sol)
     it+=1
     print(it, i)
-    #print(f"SOLUCION: ({len(sol)}), {sol}")
-print(i)
+    print(f"SOLUCION: ({len(sol)}), {sol}")
+print(f"Pulsaciones: {i}")
+print(f"Tiempo: {time.perf_counter()-start:.2f} s")
