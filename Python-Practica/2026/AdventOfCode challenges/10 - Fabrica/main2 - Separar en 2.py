@@ -1,7 +1,13 @@
 import re
+import cProfile
+import pstats
 from functools import reduce
 from itertools import combinations_with_replacement, combinations
 import time
+debug = True
+if(debug):
+    profiler = cProfile.Profile()
+    profiler.enable()
 file = open("./10 - Fabrica/puzzle-input.txt")
 class Button:
     def __init__(self, voltages:list[int]):
@@ -25,17 +31,27 @@ class Machine:
         self.voltage = list(map(int, voltage.removesuffix("}").removeprefix("{").split(",")))
     def __repr__(self):
         return f"{self.buttons} - {self.voltage}"
+    
 def validSequence(voltagesGoal:list[int], buttons:list[Button]):
     voltages = [0 for x in range(len(voltagesGoal))]
     for b in buttons:
         b.press(voltages)
     return all(map(lambda x : x[0] == x[1], zip(voltages, voltagesGoal)))
 
-def validForParity(parityGoal:list[int], buttons:list[Button]):
-    voltages = [0 for x in range(len(parityGoal))]
+def pressButtons(voltages:int,buttons:list[Button]) -> list[int]:
+    voltages = [0 for x in range(voltages)]
     for b in buttons:
         b.press(voltages)
-    return all(map(lambda x : x[0]%2 == x[1]%2, zip(voltages, parityGoal)))
+    return voltages
+def getParitys(parityGoal:list[int]) -> list[int]:
+    return [x%2 for x in parityGoal] # 0 o 1 segun paridad
+def matchesParity(numbers:list[int], paritys:list[int]):
+    return all(map(lambda x : x[0]%2 == x[1], zip(numbers, paritys)))
+
+def validForParity(parityGoal:list[int], buttons:list[Button]):
+    paritys = getParitys(parityGoal)
+    voltages = pressButtons(len(parityGoal), buttons)
+    return matchesParity(voltages, paritys)
 
 
 machines = []
@@ -51,9 +67,18 @@ def findSolution(machine : Machine) -> list[Button]:
     return findSolutionRec(availableButtons, voltages)
 
 def findSolutionRec(buttons : list[Button], voltagesParam : list[int]):
+    if(debug):
+        global start
+        if(time.perf_counter()-start>20):
+            start = time.perf_counter()  
+            stats = pstats.Stats(profiler)
+            stats.strip_dirs()
+            stats.sort_stats(pstats.SortKey.TIME)
+            stats.print_stats()
     # Va a dividir los problemas en 2 hasta poderlos resolver. Puede que sea buena idea guardar los resultados parciales en un diccionario para agilizar. No estoy seguro que sea la solucion optima, pero al menos me va a dar una solucion. Luego veo como optimizarla
     #print(f"Called: {voltagesParam}")
     paritySols = list(findForParity(buttons, voltagesParam))
+    #print(voltagesParam, it)
     #print(f"{paritySols}") 
     solutions = []
     for paritySol in paritySols:
@@ -74,11 +99,11 @@ def findSolutionRec(buttons : list[Button], voltagesParam : list[int]):
             #print(e)
             pass 
     if(len(solutions)>0):
-        return sorted(solutions, key=lambda x : len(x))[0]
+        return min(solutions, key=lambda x : len(x))
     raise Exception("No se pudo resolver", buttons, voltagesParam)
 
         
-
+# Problema aca Llama a validForParity muchas veces. Toma el 99% del tiempo de computacion en esta funcion y las subfunciones que llama
 def findForParity(buttons : list[Button], voltages = list[int]):
     for i in range(0, len(buttons)+1):
         for sol in combinations(buttons, i):
