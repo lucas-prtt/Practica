@@ -77,6 +77,12 @@ def findSolution(machine : Machine) -> list[Button]:
     #print(f"Called: {availableButtons}, {voltages}")
     return findSolutionRec(availableButtons, voltages)
 
+def voltagesSubstracting(buttons : list[Button], voltages):
+    v = voltages[:]
+    for b in buttons:
+        b.unpress(v) # Modifica lista, quedan todos los voltages pares
+    return v
+
 def findSolutionRec(buttons : list[Button], voltagesParam : list[int]):
     if(debug):
         global start
@@ -88,34 +94,44 @@ def findSolutionRec(buttons : list[Button], voltagesParam : list[int]):
             stats.print_stats()
     # Va a dividir los problemas en 2 hasta poderlos resolver. Puede que sea buena idea guardar los resultados parciales en un diccionario para agilizar. No estoy seguro que sea la solucion optima, pero al menos me va a dar una solucion. Luego veo como optimizarla
     #print(f"Called: {voltagesParam}")
-    paritySols = list(findForParity(buttons, voltagesParam))
-    #print(voltagesParam, it)
-    #print(f"{paritySols}") 
+    paritySolutions = dict()
+    for paritySolution in list(findForParity(buttons, voltagesParam)):
+        try: 
+            voltagesAfterParitySolution = tuple(voltagesSubstracting(paritySolution, voltagesParam))
+        except:
+            continue
+        existing = paritySolutions.get(voltagesAfterParitySolution)
+
+        if(existing == None or len(paritySolution) < len(existing)):
+            paritySolutions[voltagesAfterParitySolution] = paritySolution 
+            continue
+            # Nomas se queda con las soluciones mas cortas si producen el mismo resultado
+    #print(voltagesParam)
+    #print(f"{paritySolAndResult}") 
     bestSol = None
-    for paritySol in paritySols:
-        voltages = voltagesParam[:]
-        if(all(map(lambda x: x == 0, voltages))):
+    for evenVoltage in paritySolutions.keys():
+        if(all(map(lambda x: x == 0, evenVoltage))):
             return []
         try:
-            sol = []
-            for b in paritySol:
-                b.unpress(voltages) # Modifica lista, quedan todos los voltages pares
-            sol.extend(paritySol)
-            partialVoltages = list(map(lambda x : int(x/2), voltages))
+            partialVoltages = list(map(lambda x : int(x/2), evenVoltage))
             partialSol = findSolutionRec(buttons, partialVoltages)
+            sol = []
+            sol.extend(paritySolutions[evenVoltage])
             sol.extend(partialSol)
             sol.extend(partialSol)
             if(bestSol == None):
                 bestSol = sol
+                #print(f"NEW BEST SOL: {bestSol}")
             else:
                 if(len(sol)<len(bestSol)):
                     bestSol = sol
+                    #print(f"NEW BEST SOL: {bestSol}")
         except Exception as e:
             #print(e)
             pass 
-    if(sol != None):
+    if(bestSol != None):
         return bestSol
-    raise Exception("No se pudo resolver", buttons, voltagesParam)
+    raise Exception("bestSol == None", buttons, voltagesParam)
 
 
 # Problema aca Llama a validForParity muchas veces. Toma el 99% del tiempo de computo en esta funcion y las subfunciones que llama
