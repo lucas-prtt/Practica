@@ -13,6 +13,8 @@ class Button:
     def unpress(self, voltages:list[bool]) -> None:
         for i in self.voltages:
             voltages[i] -= 1
+            if(voltages[i]<0):
+                raise Exception("No se pudo reducir el voltaje por debajo de 0")
     
 class Machine:
     def __init__(self, line:str):
@@ -49,9 +51,9 @@ def findSolution(machine : Machine) -> list[Button]:
 
 def findSolutionRec(buttons : list[Button], voltagesParam : list[int]):
     # Va a dividir los problemas en 2 hasta poderlos resolver. Puede que sea buena idea guardar los resultados parciales en un diccionario para agilizar. No estoy seguro que sea la solucion optima, pero al menos me va a dar una solucion. Luego veo como optimizarla
-    #print(f"Called: {buttons}, {voltagesParam}")
+    #print(f"Called: {voltagesParam}")
     paritySols = list(findForParity(buttons, voltagesParam))
-    #print(f"{paritySols}")
+    #print(f"{paritySols}") 
 
     for paritySol in paritySols:
         voltages = voltagesParam[:]
