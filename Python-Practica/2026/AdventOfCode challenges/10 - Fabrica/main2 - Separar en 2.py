@@ -2,7 +2,7 @@ import re
 from functools import reduce
 from itertools import combinations_with_replacement, combinations
 import time
-file = open("./10 - Fabrica/test.txt")
+file = open("./10 - Fabrica/puzzle-input.txt")
 class Button:
     def __init__(self, voltages:list[int]):
         self.voltages= voltages
@@ -55,7 +55,7 @@ def findSolutionRec(buttons : list[Button], voltagesParam : list[int]):
     #print(f"Called: {voltagesParam}")
     paritySols = list(findForParity(buttons, voltagesParam))
     #print(f"{paritySols}") 
-
+    solutions = []
     for paritySol in paritySols:
         voltages = voltagesParam[:]
         if(all(map(lambda x: x == 0, voltages))):
@@ -69,9 +69,12 @@ def findSolutionRec(buttons : list[Button], voltagesParam : list[int]):
             partialSol = findSolutionRec(buttons, partialVoltages)
             sol.extend(partialSol)
             sol.extend(partialSol)
-            return sol
-        except:
+            solutions.append(sol)
+        except Exception as e:
+            #print(e)
             pass 
+    if(len(solutions)>0):
+        return sorted(solutions, key=lambda x : len(x))[0]
     raise Exception("No se pudo resolver", buttons, voltagesParam)
 
         
@@ -92,6 +95,6 @@ for m in machines:
     i+=len(sol)
     it+=1
     print(it, i)
-    print(f"SOLUCION: ({len(sol)}), {sol}")
+    #print(f"SOLUCION: ({len(sol)}), {sol}")
 print(f"Pulsaciones: {i}")
 print(f"Tiempo: {time.perf_counter()-start:.2f} s")
