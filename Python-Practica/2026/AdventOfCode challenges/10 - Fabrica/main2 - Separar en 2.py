@@ -38,15 +38,26 @@ def validSequence(voltagesGoal:list[int], buttons:list[Button]):
         b.press(voltages)
     return all(map(lambda x : x[0] == x[1], zip(voltages, voltagesGoal)))
 
+pressButtonsMemo = dict()
 def pressButtons(voltages:int,buttons:list[Button]) -> list[int]:
+    key = voltages, tuple(buttons)
+    mem = pressButtonsMemo.get(key)
+    if(mem != None):
+        return mem
     voltages = [0 for x in range(voltages)]
     for b in buttons:
         b.press(voltages)
+    pressButtonsMemo[key] = voltages
     return voltages
+
+
+getParityMemo = dict()
 def getParitys(parityGoal:list[int]) -> list[int]:
     return [x%2 for x in parityGoal] # 0 o 1 segun paridad
+
 def matchesParity(numbers:list[int], paritys:list[int]):
     return all(map(lambda x : x[0]%2 == x[1], zip(numbers, paritys)))
+    
 
 def validForParity(parityGoal:list[int], buttons:list[Button]):
     paritys = getParitys(parityGoal)
@@ -80,7 +91,7 @@ def findSolutionRec(buttons : list[Button], voltagesParam : list[int]):
     paritySols = list(findForParity(buttons, voltagesParam))
     #print(voltagesParam, it)
     #print(f"{paritySols}") 
-    solutions = []
+    bestSol = None
     for paritySol in paritySols:
         voltages = voltagesParam[:]
         if(all(map(lambda x: x == 0, voltages))):
@@ -94,22 +105,28 @@ def findSolutionRec(buttons : list[Button], voltagesParam : list[int]):
             partialSol = findSolutionRec(buttons, partialVoltages)
             sol.extend(partialSol)
             sol.extend(partialSol)
-            solutions.append(sol)
+            if(bestSol == None):
+                bestSol = sol
+            else:
+                if(len(sol)<len(bestSol)):
+                    bestSol = sol
         except Exception as e:
             #print(e)
             pass 
-    if(len(solutions)>0):
-        return min(solutions, key=lambda x : len(x))
+    if(sol != None):
+        return bestSol
     raise Exception("No se pudo resolver", buttons, voltagesParam)
 
-        
-# Problema aca Llama a validForParity muchas veces. Toma el 99% del tiempo de computacion en esta funcion y las subfunciones que llama
+
+# Problema aca Llama a validForParity muchas veces. Toma el 99% del tiempo de computo en esta funcion y las subfunciones que llama
+# Hay que encontrar un mejor algoritmo que el iterativo para hallar las combinaciones correctas
 def findForParity(buttons : list[Button], voltages = list[int]):
+    ans = []
     for i in range(0, len(buttons)+1):
         for sol in combinations(buttons, i):
             if(validForParity(voltages, sol)):
-                yield list(sol)
-
+                ans.append(sol)
+    return ans
 
 
 i = 0
