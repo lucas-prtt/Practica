@@ -4,7 +4,8 @@ import pstats
 from functools import reduce
 from itertools import combinations_with_replacement, combinations
 import time
-debug = True
+from functools import lru_cache
+debug = False
 if(debug):
     profiler = cProfile.Profile()
     profiler.enable()
@@ -37,32 +38,21 @@ def validSequence(voltagesGoal:list[int], buttons:list[Button]):
     for b in buttons:
         b.press(voltages)
     return all(map(lambda x : x[0] == x[1], zip(voltages, voltagesGoal)))
-
-pressButtonsMemo = dict()
-def pressButtons(voltages:int,buttons:list[Button]) -> list[int]:
-    key = voltages, tuple(buttons)
-    mem = pressButtonsMemo.get(key)
-    if(mem != None):
-        return mem
+def pressButtons(voltages:int,buttons:tuple[Button]) -> tuple[int]:
     voltages = [0 for x in range(voltages)]
     for b in buttons:
         b.press(voltages)
-    pressButtonsMemo[key] = voltages
-    return voltages
+    return tuple(voltages)
 
-
-getParityMemo = dict()
-def getParitys(parityGoal:list[int]) -> list[int]:
-    return [x%2 for x in parityGoal] # 0 o 1 segun paridad
-
-def matchesParity(numbers:list[int], paritys:list[int]):
-    return all(map(lambda x : x[0]%2 == x[1], zip(numbers, paritys)))
+def getParitys(parityGoal:tuple[int]) -> tuple[int]:
+    return tuple([x%2 for x in parityGoal]) # 0 o 1 segun paridad
     
 
-def validForParity(parityGoal:list[int], buttons:list[Button]):
-    paritys = getParitys(parityGoal)
+def validForParity(parityGoal:tuple[int], buttons:tuple[Button]) -> bool:
+    paritys = getParitys(tuple(parityGoal))
     voltages = pressButtons(len(parityGoal), buttons)
-    return matchesParity(voltages, paritys)
+    voltagesParity = getParitys(voltages)
+    return voltagesParity == paritys
 
 
 machines = []
@@ -75,15 +65,15 @@ def findSolution(machine : Machine) -> list[Button]:
     availableButtons = machine.buttons
     voltages = machine.voltage
     #print(f"Called: {availableButtons}, {voltages}")
-    return findSolutionRec(availableButtons, voltages)
+    return findSolutionRec(tuple(availableButtons), tuple(voltages))
 
-def voltagesSubstracting(buttons : list[Button], voltages):
-    v = voltages[:]
+def voltagesSubstracting(buttons : tuple[Button], voltages):
+    v = list(voltages)
     for b in buttons:
         b.unpress(v) # Modifica lista, quedan todos los voltages pares
     return v
-
-def findSolutionRec(buttons : list[Button], voltagesParam : list[int]):
+@lru_cache(maxsize=300000)
+def findSolutionRec(buttons : tuple[Button], voltagesParam : tuple[int]):
     if(debug):
         global start
         if(time.perf_counter()-start>20):
@@ -92,13 +82,14 @@ def findSolutionRec(buttons : list[Button], voltagesParam : list[int]):
             stats.strip_dirs()
             stats.sort_stats(pstats.SortKey.TIME)
             stats.print_stats()
+            print(f"FindSoltionCache: {findSolutionRec.cache_info()}")
     # Va a dividir los problemas en 2 hasta poderlos resolver. Puede que sea buena idea guardar los resultados parciales en un diccionario para agilizar. No estoy seguro que sea la solucion optima, pero al menos me va a dar una solucion. Luego veo como optimizarla
     #print(f"Called: {voltagesParam}")
     paritySolutions = dict()
     for paritySolution in list(findForParity(buttons, voltagesParam)):
         try: 
             voltagesAfterParitySolution = tuple(voltagesSubstracting(paritySolution, voltagesParam))
-        except:
+        except Exception as e:
             continue
         existing = paritySolutions.get(voltagesAfterParitySolution)
 
@@ -107,14 +98,16 @@ def findSolutionRec(buttons : list[Button], voltagesParam : list[int]):
             continue
             # Nomas se queda con las soluciones mas cortas si producen el mismo resultado
     #print(voltagesParam)
+    #print(len(paritySolutions))
     #print(f"{paritySolAndResult}") 
     bestSol = None
     for evenVoltage in paritySolutions.keys():
-        if(all(map(lambda x: x == 0, evenVoltage))):
+        if(all(map(lambda x: x == 0, voltagesParam))):
+            # print("Returning []")
             return []
         try:
             partialVoltages = list(map(lambda x : int(x/2), evenVoltage))
-            partialSol = findSolutionRec(buttons, partialVoltages)
+            partialSol = findSolutionRec(buttons, tuple(partialVoltages))
             sol = []
             sol.extend(paritySolutions[evenVoltage])
             sol.extend(partialSol)
@@ -130,13 +123,14 @@ def findSolutionRec(buttons : list[Button], voltagesParam : list[int]):
             #print(e)
             pass 
     if(bestSol != None):
+        # print(f"Returning bestSol to {voltagesParam} -> {bestSol}")
         return bestSol
     raise Exception("bestSol == None", buttons, voltagesParam)
 
 
 # Problema aca Llama a validForParity muchas veces. Toma el 99% del tiempo de computo en esta funcion y las subfunciones que llama
 # Hay que encontrar un mejor algoritmo que el iterativo para hallar las combinaciones correctas
-def findForParity(buttons : list[Button], voltages = list[int]):
+def findForParity(buttons : tuple[Button], voltages = tuple[int]):
     ans = []
     for i in range(0, len(buttons)+1):
         for sol in combinations(buttons, i):
@@ -148,11 +142,30 @@ def findForParity(buttons : list[Button], voltages = list[int]):
 i = 0
 it = 0
 start = time.perf_counter()
+unchangingStart = time.perf_counter()
+
 for m in machines: 
+    it+=1
     sol = findSolution(m)
     i+=len(sol)
-    it+=1
-    print(it, i)
-    #print(f"SOLUCION: ({len(sol)}), {sol}")
+    # diff = len(m.buttons) - len(m.voltage)
+    # if(diff > 2):
+    #     print(it, diff)
+    print(f"{it} - SOLUCION: ({len(sol)}), Total acumulado: {i}")
 print(f"Pulsaciones: {i}")
-print(f"Tiempo: {time.perf_counter()-start:.2f} s")
+print(f"Tiempo: {time.perf_counter()-unchangingStart:.2f} s")
+
+
+# El problema son los que tienen mas botones que voltajes. Son especialmente problematicos:
+# 26 3
+# 70 3
+# 88 3
+# 99 3
+# 124 3
+# (Linea (indice 1), extras)
+# Los que se pasan por 2 tambien tardan mas, pero se resuelven en uno o dos segundos. Con 3 tarda hasta 2-3 minutos
+# Habria que encontrar alguna manera de "Simplificar" el problema. Algo con eliminacion gaussiana por ahi
+# Escuche que hay un programa "Z3" que sirve para resolver este tipo de problemas facilmente. Valdria la pena aprender a usarlo, aunque le quita proposito a este tipo de desafios 
+
+# Con un solo nucleo este programa se ejecuto sobre mi input en 7m 3,7s. Se puede mejorar pero por ahora me conformo con esto
+
